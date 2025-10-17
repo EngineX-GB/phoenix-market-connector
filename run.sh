@@ -173,25 +173,25 @@ elif [ $1 = '--watchlist' ]
 elif [ $1 = '--group' ]
 	then load_region_in_groups $2 $3
 elif [ $1 = '--query' ]
-	then python PhoenixMobileConnectorUtil.py search $2 $3
+	then python src/PhoenixMobileConnectorUtil.py search $2 $3
 elif [ $1 = '--chkdup' ]
-	then python PhoenixMobileConnectorUtil.py duplicates $2
+	then python src/PhoenixMobileConnectorUtil.py duplicates $2
 elif [ $1 = '--chkdup-all' ]
-	then python PhoenixMobileConnectorUtil.py duplicates-all
+	then python src/PhoenixMobileConnectorUtil.py duplicates-all
 elif [ $1 = '--fixdup' ]
-	then python PhoenixMobileConnectorUtil.py duplicates-fix $2
+	then python src/PhoenixMobileConnectorUtil.py duplicates-fix $2
 elif [ $1 = '--chkfeed' ]
-	then python PhoenixMobileConnectorUtil.py corrupt-data $2
+	then python src/PhoenixMobileConnectorUtil.py corrupt-data $2
 elif [ $1 = '--chkfeed-all' ]
-	then python PhoenixMobileConnectorUtil.py corrupt-data-all	
+	then python src/PhoenixMobileConnectorUtil.py corrupt-data-all
 elif [ $1 = '--fixdup-all' ]
-	then python PhoenixMobileConnectorUtil.py duplicates-fix-all
+	then python src/PhoenixMobileConnectorUtil.py duplicates-fix-all
 elif [ $1 = '--history' ]
-	then python PhoenixMobileConnectorUtil.py historysearch $2
+	then python src/PhoenixMobileConnectorUtil.py historysearch $2
 elif [ $1 = '--master-file' ]
-	then python PhoenixMobileConnectorUtil.py master-file
+	then python src/PhoenixMobileConnectorUtil.py master-file
 elif [ $1 = '--feeds' ]
-	then python PhoenixMobileConnectorUtil.py feeds
+	then python src/PhoenixMobileConnectorUtil.py feeds
 elif [ $1 = '--image' ] && [ $2 = '--update' ]
 	then python src/portable-runner.py image update $3
 elif [ $1 = '--image' ] && [ $2 = '--update-british-data' ]
@@ -237,9 +237,9 @@ elif [ $1 = '--load-userids' ]
 elif [ $1 = '--details' ]
 	then python .././src/portable-runner.py details
 elif [ $1 = '--feedback-data' ] && [ $2 = '--f' ] && [ $4 = '--userId' ]
-	then python PhoenixMobileConnectorUtil.py feedback-data today $3 $5
+	then python src/PhoenixMobileConnectorUtil.py feedback-data today $3 $5
 elif [ $1 = '--get-british-list' ]
-	then python PhoenixMobileConnectorUtil.py "get-british-list"
+	then python src/PhoenixMobileConnectorUtil.py "get-british-list"
 elif [ $1 = '--get-ratings' ]
 	then python src/portable-runner.py get-ratings
 elif [ $1 = '--sp-update']

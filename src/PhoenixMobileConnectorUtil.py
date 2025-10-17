@@ -1,0 +1,358 @@
+import os
+import datetime
+import sys
+from model.PropertyManager import PropertyManager
+from util.PropertyFileReader import PropertyFileReader
+
+
+class PortableUtil:
+
+    def __init__(self, propertyManager):
+        self.propertyManager = propertyManager
+
+
+    def getFeedbackDataForUser(self, dateString, ratingFilter, userId):
+        current_date_format_string = None
+        if dateString is None or dateString == "today":
+            current_date_format_string = datetime.datetime.now().strftime("%Y-%m-%d")
+        else:
+            current_date_format_string = dateString
+        feedbackDirectory = self.propertyManager.getFeedsFeedbackDirectory() + "/" + current_date_format_string
+        if os.path.exists(feedbackDirectory):
+            feedbackFiles = os.listdir(feedbackDirectory)
+            for f in feedbackFiles:
+                if userId in f:
+                    # open the file
+                    self.openFeedbackFile(feedbackDirectory + "/" + f, ratingFilter)
+
+        else:
+            print("ERR> Directory [" + feedbackDirectory + "] not found")
+
+
+
+    def openFeedbackFile(self, filename, ratingFilter):
+        f = open(filename, "r", encoding="utf-8")
+        lines = f.read().splitlines()
+        print("\n---------------------------------------\n")
+        for l in lines:
+            fields = l.split("|")
+            if ratingFilter == fields[1]:
+                print("Rating : " + fields[1])
+                print("Date : " + fields[4])
+                print("Comment: " + fields[6])
+                if fields[7] != "None":
+                    print("Response : " + fields[7])
+                print("\n---------------------------------------\n")
+            elif ratingFilter == "ALL":
+                print("Rating : " + fields[1])
+                print("Date : " + fields[4])
+                print("Comment: " + fields[6])
+                if fields[7] != "None":
+                    print("Response : " + fields[7])
+                print("\n---------------------------------------\n")
+        f.close()
+
+
+    def listAllFeedDates(self):
+        feedsDirectory = self.propertyManager.getFeedsDirectory() #"../feeds"
+        if os.path.exists(feedsDirectory):
+            feedDirectories = os.listdir(feedsDirectory)
+            for f in feedDirectories:
+                print("[OUT] " + f + " (" + str(len(os.listdir(feedsDirectory + "/" + f))) +" files)")
+
+    def generateUserMasterFile(self):
+        imagesDirectory = "../images"
+        if os.path.exists(imagesDirectory):
+            userImageDirectories = os.listdir(imagesDirectory)
+            file = open(self.propertyManager.getTempDirectory() + "/temp_image_master_file.txt", "w", encoding="UTF-8")
+            for d in userImageDirectories:
+                file.write(d + "\n")
+            file.close()
+            print("[INFO] Image master file is created")
+        else:
+            print("[ERROR] images directory does not exist.")
+
+
+
+    # Query existing feed files to find a client either by username or by provider UserID
+    def search(self, searchString, customDate):
+        results = []
+        feedDirectory = self.propertyManager.getFeedsDirectory() + "/" + customDate;
+        if os.path.exists(feedDirectory):
+            files = os.listdir(feedDirectory)
+            # loop though these files
+            # open the stream of the files and capture suitable matches
+            for f in files:
+                self.readFile(feedDirectory + "/" + f, results, searchString)
+        return results
+
+
+    def singleSearch (self, searchString, customDate):
+        if customDate is None:
+            current_date_format_string = datetime.datetime.now().strftime("%Y-%m-%d")
+        else:
+            current_date_format_string = customDate
+        print("\n[INFO] Search through data as of " +current_date_format_string + "\n")
+        results = self.search(searchString, current_date_format_string)
+        # View the results list (to include the username, phone number and user ID)
+        if len(results) > 0:
+            for result in results:
+                print(result+"\n")
+            print("\n" +str(len(results)) + " result{s) found.")
+        else:
+            print("[INFO] No matches returned")
+        print("\n")
+
+
+
+    def historySearch (self, searchString, numdays):
+        base = datetime.datetime.today()
+        date_list = [base - datetime.timedelta(days=x) for x in range(numdays)]
+        for dateString in date_list:
+            results = self.search(searchString, dateString.strftime("%Y-%m-%d"))
+            if len(results) > 0:
+                for result in results:
+                    print(result + "\n")
+
+
+    def readFile(self, filename, results, searchString):
+        f = open(filename, "r", encoding="UTF-8")
+        lines = f.read().splitlines()
+        for l in lines:
+            if searchString in l:
+                # split the record to get the user ID, telephone number, Username, Region
+                recordSplit = l.split("|")
+                results.append(recordSplit[0] +" | " + recordSplit[1] + " | "  + recordSplit[3] + " | " + recordSplit[4] + " | "   + recordSplit[16] + " | " + recordSplit[19] + " | " + recordSplit[21])
+        f.close()
+
+
+    def readFileDetectDuplicates(self, filename, dictCount, dictDuplicate, printFileNames, performFix):
+        duplicateUserIds = set()
+        f = open(filename, "r", encoding="utf-8")
+        lines = f.read().splitlines()
+        f.close()
+        for l in lines:
+            recordSplit = l.split("|")
+            if len(recordSplit) > 1:        # to handle cases where the line in the feed shows 'None'
+                if recordSplit[19] in dictCount:
+                    updatedCount = (dictCount[recordSplit[19]]) + 1
+                    dictCount[recordSplit[19]] = updatedCount
+                    duplicateUserIds.add(recordSplit[19])
+                    # append the name of the files that contain the duplicate
+                    if printFileNames is True:
+                        print("[WARN] Identified duplicate in " + filename+ ", userId: " + recordSplit[19])
+                else:
+                    dictCount[recordSplit[19]] = 1
+        if performFix is True and len(duplicateUserIds) > 0:
+            isFixed = self.removeDuplicates(filename, duplicateUserIds)
+            if isFixed is True:
+                print("[INFO] File : [" + filename + "] has been fixed")
+            else:
+                print("[INFO] File : [" + filename + "] has not been fixed. Please fix manually")
+
+    """Attempts to fix the file and removes the duplicates"""
+    def removeDuplicates(self, filename, userIdSet):
+        print("[INFO] Fixing the file : [" + filename + "] for user IDs: " + str(userIdSet))
+        f = open(filename, "r", encoding="utf-8")
+        currentLines = f.read().splitlines()
+        f.close()
+        # perform the fix
+        newFile = open(filename, "w", encoding="utf-8")
+        for cl in currentLines:
+            fields = cl.split("|")
+            if fields[19] not in userIdSet:
+                newFile.write(cl + "\n")
+        newFile.close()
+        # confirm this in the new file
+        f2 = open(filename, "r", encoding="utf-8")
+        newLines = f2.read().splitlines()
+        f2.close()
+        if len(newLines) < len(currentLines):
+            return True
+        else:
+            return False
+
+
+    """Method to detect duplicate records in feed files
+    
+        printFileNames: boolean
+        printSummary: boolean
+        performFix: boolean
+        dateString: string
+    
+    """
+    def identifyDuplicateUserData(self, dateString, printFileNames, printSummary, performFix):
+        path = self.propertyManager.getFeedsDirectory() + "/" + dateString
+        dictCount = {}
+        dictDuplicate = {}
+        duplicateCount = 0
+        duplicateUsersSet = set()
+        if os.path.exists(path):
+            feeds = os.listdir(path)
+            for f in feeds:
+                self.readFileDetectDuplicates(path + "/" + f, dictCount, dictDuplicate, printFileNames, performFix)
+            if printSummary is True:
+                for k in dictCount.keys():
+                    if int(dictCount[k]) > 1:
+                        duplicateCount = duplicateCount + 1
+                        if performFix is False:
+                            # print out the user IDs with duplicate counts in the dictionary
+                            print("[DEBUG] UserId : [ " + k + " ] , occurences: " + str(dictCount[k]))
+                        duplicateUsersSet.add(k)
+
+                if duplicateCount > 0:
+
+                    if performFix is False:
+                        print("\nIdentified duplicates for : " + dateString + " [ " + str(duplicateCount) + " ]")
+
+                    if performFix is True:
+                        # if the fix is assumed to be have worked, then run another read only check on the duplicate for this date for
+                        # these specific user IDs to make sure that they are set to 1 now.
+                        dictCount = {} # reset the dictionary
+                        duplicateCount = 0
+                        for f in feeds:
+                            self.readFileDetectDuplicates(path + "/" + f, dictCount, {}, False, False)
+                        for k in dictCount.keys():
+                            if k in duplicateUsersSet:
+                                print("[DEBUG] UserId : [ " + k + " ] , occurences: " + str(dictCount[k]))
+                                if int(dictCount[k]) > 1:
+                                    duplicateCount = duplicateCount + 1
+
+            if duplicateCount > 0:
+                return True
+            else:
+                return False
+        else:
+            print("[ERROR] " + path + " does not exist")
+            return False
+
+
+
+
+    """Identify dates for all feeds for all dates on the file system"""
+    def identifyDuplicateUserDataAcrossAllDatesOnFileSystem(self, performFix):
+        path = self.propertyManager.getFeedsDirectory()
+        numberOfFeedDirsWithDuplicates = 0
+        if (os.path.exists(path)):
+            feedDirectories = os.listdir(path)
+            for dateStringDir in feedDirectories:
+                containsDuplicates = self.identifyDuplicateUserData(dateStringDir, False, True, performFix)
+                if containsDuplicates is True:
+                    numberOfFeedDirsWithDuplicates = numberOfFeedDirsWithDuplicates + 1
+        print("Number of feed directories containing duplicates : " + str(numberOfFeedDirsWithDuplicates))
+
+
+
+    """
+    To identify any corrupt feed files that have incomplete rows of data
+    """
+    def checkCorruptData(self, dateString):
+        feedsPath = self.propertyManager.getFeedsDirectory() + "/" + dateString
+        if os.path.exists(feedsPath):
+            feeds = os.listdir(feedsPath)
+            for feed in feeds:
+                f = open(feedsPath + "/" +feed, "r", encoding="UTF-8")
+                lines = f.read().splitlines()
+                f.close()
+                for line in lines:
+                    if line == "None":
+                        print("[WARN] File : " + feed + " contains 'None'")
+                    else:
+                        fields = line.split("|")
+                        if len(fields) < 22:
+                            print("[WARN] File : " + feed + " has less than 22 fields [ contains " + str(len(fields)) + "]")
+        else:
+            print("[" + feedsPath + "] does not exist")
+
+
+    def checkCorruptDataForAllDatesOnFileSystem(self):
+        feedsDirPath = self.propertyManager.getFeedsDirectory()
+        feedsDirs = os.listdir(feedsDirPath)
+        for date in feedsDirs:
+            self.checkCorruptData(date)
+
+    def getBritishUserIdsList(self):
+        print("[INFO] Getting the List with British UserIds")
+        dateString = datetime.datetime.now().strftime("%Y-%m-%d")
+        userIds = []
+        feedsPath = self.propertyManager.getFeedsDirectory() + "/" + dateString
+        if os.path.exists(feedsPath):
+            feeds = os.listdir(feedsPath)
+            for feed in feeds:
+                f = open(feedsPath + "/" +feed, "r", encoding="UTF-8")
+                lines = f.read().splitlines()
+                f.close()
+                for line in lines:
+                    if line == "None":
+                        print("[WARN] File : " + feed + " contains 'None'")
+                    else:
+                        fields = line.split("|")
+                        if len(fields) < 22:
+                            print("[WARN] File : " + feed + " has less than 22 fields [ contains " + str(len(fields)) + "]")
+                            continue
+                        if fields[1] == "British":
+                            userIds.append(fields[19])
+            # now write this file to disk
+            file = open(self.propertyManager.getTempDirectory() + "/temp_british_userid_list.txt", "w", encoding="UTF-8")
+            for u in userIds:
+                file.write(u + "\n")
+            file.close()
+        else:
+            print("[" + feedsPath + "] does not exist")
+
+
+
+    def main(self, args):
+        if len(args) > 1:
+            if sys.argv[1] == "search":
+                if len(sys.argv) == 4:
+                    self.singleSearch(args[2], args[3])
+                else:
+                    self.singleSearch(sys.argv[2], None)
+            elif args[1] == "historysearch":
+                self.historySearch(args[2], 100)
+            elif args[1] == "feeds":
+                self.listAllFeedDates()
+            elif args[1] == "feedback-data":
+                #arg2 = either a date string (e.g. 2022-07-05) or "now" (for today)
+                #arg3 = rating filter ("Positive", "Negative", "FeedbackOnly") or "NOW" (for all ratings)
+                #arg4 = userId
+                self.getFeedbackDataForUser(args[2], args[3], args[4])
+            elif args[1] == "master-file":
+                self.generateUserMasterFile()
+            elif args[1] == "duplicates":
+                dateString = None
+                if len(args) == 2:
+                    dateString = datetime.datetime.now().strftime("%Y-%m-%d")
+                else:
+                    dateString = args[2]
+                self.identifyDuplicateUserData(dateString, True, False, False)
+            elif args[1] == "duplicates-fix":
+                dateString = None
+                if len(args) == 2:
+                    dateString = datetime.datetime.now().strftime("%Y-%m-%d")
+                else:
+                    dateString = args[2]
+                self.identifyDuplicateUserData(dateString, True, False, True)
+            elif args[1] == "corrupt-data":
+                dateString = None
+                if len(sys.argv) == 2:
+                    dateString = datetime.datetime.now().strftime("%Y-%m-%d")
+                else:
+                    dateString = args[2]
+                self.checkCorruptData(dateString)
+            elif args[1] == "corrupt-data-all":
+                self.checkCorruptDataForAllDatesOnFileSystem()
+            elif args[1] == "duplicates-all":
+                self.identifyDuplicateUserDataAcrossAllDatesOnFileSystem(False)
+            elif args[1] == "duplicates-fix-all":
+                self.identifyDuplicateUserDataAcrossAllDatesOnFileSystem(True)
+            elif args[1] == "get-british-list":
+                self.getBritishUserIdsList()
+            else:
+                print("\n[ERROR] Unknown operation\n")
+
+propertyFileReader = PropertyFileReader("properties/config.properties")
+propertyManager = PropertyManager(propertyFileReader)
+portableUtil = PortableUtil(propertyManager)
+portableUtil.main(sys.argv)
