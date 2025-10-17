@@ -13,7 +13,7 @@ from model.PropertyManager import PropertyManager
 from PhoenixMobileConnector import PhoenixMobileConnector
 from persistence.PersistenceIO import PersistenceIO
 
-propertyFileReader = PropertyFileReader(".././properties/config.properties")
+propertyFileReader = PropertyFileReader("properties/config.properties")
 propertyManager = PropertyManager(propertyFileReader)
 persistence = PersistenceIO(propertyManager)
 connector = PhoenixMobileConnector(propertyManager, persistence)
