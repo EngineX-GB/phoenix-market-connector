@@ -1,0 +1,5 @@
+.idea/
+app-data/
+src/.idea/
+src/.vscode/
+deploy/distro/

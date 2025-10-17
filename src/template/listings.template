@@ -1,0 +1,55 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript">
+        
+        function openWindow(url) {
+            window.open(url);
+        }
+
+        </script>
+        <style type="text/css">
+            body {
+                font-size:6pt;
+                font-family: calibri;
+                background: rgb(24, 34, 41);
+                    color:white;}
+
+            table, tr {
+                border-color: grey;
+                border-style:groove;
+                padding:0
+            }
+
+            thead {
+                background: black
+            }
+
+            td {
+                font-size:6pt;
+                font-family: calibri;
+            }
+            a {
+                color:white;
+            }
+        </style>
+    </head>
+    <body>
+        <table>
+            <thead>
+                <tr>
+                    <td>Username</td>
+                    <td>Telephone</td>
+                    <td>Nationality</td>
+                    <td>Age</td>
+                    <td>Rating</td>
+                    <td>Location</td>
+                    <td>R1.0</td>
+                </tr>
+            </thead>
+            <tbody>
+                ${records}
+            </tbody>
+        </table>
+    </body>
+</html>
