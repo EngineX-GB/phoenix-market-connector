@@ -138,7 +138,7 @@ class PhoenixImageFetcher:
             # fetch the new files that exist on the server for the user id
             headers = {"User-agent": "Mozilla/5.0"}
             for i in range(1, 4):
-                url = self.propertyManager.getImageDomainUrl + "/ci/f/" + user_id + "_" + str(i) + ".jpg"
+                url = self.propertyManager.getImageDomainUrl() + "/ci/f/" + user_id + "_" + str(i) + ".jpg"
                 print("[DEBUG] Check file on server to see if hash matches with stored hashes [" + url + "]")
                 response = requests.get(url, headers=headers)
                 response.raise_for_status()  # Throws an error if the request failed
