@@ -1,4 +1,4 @@
-from EpgTopicLoader import EpgTopicLoader
+from loader.EpgTopicLoader import EpgTopicLoader
 from datetime import datetime
 import os
 import re

@@ -1,16 +1,16 @@
 import os
 import sys
 
-from EpgMobileConnector import EpgMobileConnector
-from EpgServiceProviderLoader import EpgServiceProviderLoader
-from HtmlGenerator import HtmlGenerator
-from PhoenixFeedbackFetcher import PhoenixFeedbackFetcher
-from PhoenixImageFetcher import PhoenixImageFetcher
-from WatchListManager import WatchListManager
+from loader.EpgMobileConnector import EpgMobileConnector
+from loader.EpgServiceProviderLoader import EpgServiceProviderLoader
+from portable.HtmlGenerator import HtmlGenerator
+from loader.PhoenixFeedbackFetcher import PhoenixFeedbackFetcher
+from loader.PhoenixImageFetcher import PhoenixImageFetcher
+from portable.WatchListManager import WatchListManager
 from util.PhoenixUtil import PhoenixUtil
 from util.PropertyFileReader import PropertyFileReader
 from model.PropertyManager import PropertyManager
-from PhoenixMobileConnector import PhoenixMobileConnector
+from loader.PhoenixMobileConnector import PhoenixMobileConnector
 from persistence.PersistenceIO import PersistenceIO
 
 propertyFileReader = PropertyFileReader("properties/config.properties")
