@@ -278,7 +278,7 @@ class PhoenixMobileConnector:
         # read the app.json file
         # Note that needs to be fixed based on the where the cmd prompt is running from a particular directory
         # as run.sh run from the scripts folder.
-        f = open("../app.json")
+        f = open("src/app.json")
         appConfig = json.load(f)
         f.close()
         print("[INFO] Application : " + appConfig["application"])

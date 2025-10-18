@@ -211,7 +211,7 @@ elif [ $1 = '--image' ] && [ $2 = '--verify-empty-folders' ]
 elif [ $1 = '--image' ] && [ $2 = '--delete-empty-folders' ]
 	then python src/portable-runner.py image delete-empty-folders
 elif [ $1 = '--image' ] && [ $2 = '--subgroup' ]
-	then python /src/portable-runner.py image subgroup $3 $4
+	then python src/portable-runner.py image subgroup $3 $4
 elif [ $1 = '--loop' ]
 	then load_in_loop $2
 elif [ $1 = '--robomode' ]
@@ -235,7 +235,7 @@ elif [ $1 = '--userids' ]
 elif [ $1 = '--load-userids' ]
 	then python src/portable-runner.py loadList ../static/watchlist.txt
 elif [ $1 = '--details' ]
-	then python .././src/portable-runner.py details
+	then python src/portable-runner.py details
 elif [ $1 = '--feedback-data' ] && [ $2 = '--f' ] && [ $4 = '--userId' ]
 	then python src/portable-util.py feedback-data today $3 $5
 elif [ $1 = '--get-british-list' ]
