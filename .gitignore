@@ -3,3 +3,4 @@ app-data/
 src/.idea/
 src/.vscode/
 deploy/distro/
+release/linux/phoenix-v3/
