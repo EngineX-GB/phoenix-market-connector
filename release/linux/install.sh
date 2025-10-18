@@ -12,10 +12,23 @@
 # Perform an update on an existing installation
 # sh install.sh --update <existing_installation_of_phoenix_directory> <new_version>
 # sh install.sh --update /c/users/dell/phoenix-v3 3.0.2
+#
+# Sets up the latest python version and installs the dependencies.
+# sh install.sh --env-setup
 
 CURRENT_LOCATION=$(pwd)
 PHOENIX_HOME="${CURRENT_LOCATION}/phoenix-v3"
 VERSION="3.0.2"
+
+if [ $1 = "--env-setup" ]; then
+  echo "[INFO] Setting up python and dependencies...."
+  apt-get install -y python
+  pip install beautifulsoup4==4.12.3 --no-input
+  pip install requests==2.31.0 --no-input
+  pip install cloudscraper==1.2.71 --no-input
+  echo "Completed. Exiting."
+  exit
+fi
 
 if [ $1 = "--update" ]; then
   PHOENIX_HOME= $2
