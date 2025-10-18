@@ -153,6 +153,7 @@ load_experimental_data_by_date() {
 	python ExpressConnector_v4.py 14 $1
 }
 
+cd ..
 
 if [ $1 = '--report' ]
 	then python portable-runner.py report $2;
@@ -246,3 +247,4 @@ elif [ $1 = '--sp-update']
   then python portable-runner.py sp-update $2
 fi
 
+cd ./bin
