@@ -1,10 +1,10 @@
 @echo off
 
-call .././src/setenv.bat
+call .././setenv.bat
 rem -- version the code
 python job_versioning.py --appDirectory .././src
 
-rem -- packge the code
+rem -- package the code
 python job_package.py .././src
 
 @echo on
