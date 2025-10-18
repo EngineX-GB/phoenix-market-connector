@@ -1,14 +1,48 @@
 #!/bin/bash
 
+# Market Connector installation for Linux (18/10/25)
+# Suitable for a first time installation on linux.
+
+# usage:
+
+# Perform a fresh install of the connector
+# sh install.sh --fresh
+#
+#
+# Perform an update on an existing installation
+# sh install.sh --update <existing_installation_of_phoenix_directory> <new_version>
+# sh install.sh --update /c/users/dell/phoenix-v3 3.0.2
+
 CURRENT_LOCATION=$(pwd)
 PHOENIX_HOME="${CURRENT_LOCATION}/phoenix-v3"
-rm -fr "${PHOENIX_HOME}"
+VERSION="3.0.2"
+
+if [ $1 = "--update" ]; then
+  PHOENIX_HOME= $2
+  VERSION = $3
+  echo "[INFO] Running update to version ${VERSION}."
+  echo "[INFO]"
+  echo "[INFO] Phoenix Directory : ${PHOENIX_HOME}"
+  echo "[INFO]"
+
+  # perform some checks before doing the update
+  if [ ! -d "${PHOENIX_HOME}/src" ]; then
+     echo "[ERROR] Directory ${PHOENIX_HOME} does not exist. Cannot proceed with update."
+     exit
+  fi
+  rm -fr ${PHOENIX_HOME}/src
+else
+  # do this ONLY if it's a fresh install (i.e. not an update)
+  echo "[INFO] As this is a a fresh install, remove any old instances of the connector"
+  rm -fr "${PHOENIX_HOME}"
+fi
+
 INSTALL_DIR="${PHOENIX_HOME}/src"
 TEMP_DIR="${PHOENIX_HOME}/install-temp"
 mkdir -p "$INSTALL_DIR"
 mkdir -p "$TEMP_DIR"
 # download file
-curl -L -o ${TEMP_DIR}/phoenix.zip https://github.com/EngineX-GB/phoenix-market-connector/releases/download/3.0.2/phoenix-mobile-connector_3.0.2.zip
+curl -L -o ${TEMP_DIR}/phoenix.zip https://github.com/EngineX-GB/phoenix-market-connector/releases/download/${VERSION}/phoenix-mobile-connector_${VERSION}.zip
 # unzip
 if [ $? -eq 0 ]; then
     unzip "${TEMP_DIR}/phoenix.zip" -d "${INSTALL_DIR}"
