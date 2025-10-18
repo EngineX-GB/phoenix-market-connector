@@ -1,11 +1,21 @@
 # Portable version
 
+
+## Setup instructions
+
+Note that this was built using python version 3.10.2, and the following pip dependencies:
+
+`bs4 4.12.3`
+`requests 2.31.0`
+`cloudscraper 1.2.71`
+
+
 1. On Android, download Termux
 
 2. Open Termux and run the command `termux-setup-storage`. This will allow termux to have access to the file system on the device.
 You will be required to manually grant permissions on Android for Termux to have all permissions to the filesystem on the device.
 
-3. Once granted, you'll see a folder called 'storage` appear in the current directory of the termux session:
+3. Once granted, you'll see a folder called `storage` appear in the current directory of the termux session:
 
 >> `/data/data/com.termux/files/home`
 >> `ls`
@@ -68,14 +78,8 @@ pip install cloudscraper==1.2.71 --no-input
 
 `sh run.sh --region 1`
 
-Library versions as of 18/10/2025:
 
-bs4 4.12.3
-requests 2.31.0
-cloudscraper 1.2.71
-
-
-Report to view on chrome brower on the device:
+Report to view on chrome browser on the device:
 
 (Huawei Device, opera browser)
 `file:///storage/emulated/0/dcim/phoenix/reports/main.html`
