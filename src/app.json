@@ -1,11 +1,12 @@
 {
     "application": "phoenix-mobile-connector",
-    "version": "2.1.2",
-    "date": "2025-09-07",
+    "version": "3.0.1",
+    "date": "2025-10-18",
     "changeset": [
         "2022-11-27 | Adding app.json and application details parameter",
         "2022-11-29 | Enable page range downloading",
         "2022-12-18 | Handle ConnectionError",
-        "2025-07-27 | Fixed feedback and image script. Added height and likes list."
+        "2025-07-27 | Fixed feedback and image script. Added height and likes list.",
+        "2025-10-18 | Major refactoring exercise to organise code for future improvements"
     ]
 }
