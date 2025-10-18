@@ -7,20 +7,20 @@
 # sh .././run.sh --stats											Get Stats on Available data (stored on the service provider)
 
 load() {
-	python src/portable-runner.py 1
-	python src/HtmlGenerator.py
-	python src/portable-runner.py 2
-	python src/portable-runner.py 3
-	python src/portable-runner.py 4
-	python src/portable-runner.py 5
-	python src/portable-runner.py 6
-	python src/portable-runner.py 7
-	python src/portable-runner.py 8
-	python src/portable-runner.py 9
-	python src/portable-runner.py 10
-	python src/portable-runner.py 11
-	python src/portable-runner.py 12
-	python src/portable-runner.py 14
+	python portable-runner.py 1
+	python HtmlGenerator.py
+	python portable-runner.py 2
+	python portable-runner.py 3
+	python portable-runner.py 4
+	python portable-runner.py 5
+	python portable-runner.py 6
+	python portable-runner.py 7
+	python portable-runner.py 8
+	python portable-runner.py 9
+	python portable-runner.py 10
+	python portable-runner.py 11
+	python portable-runner.py 12
+	python portable-runner.py 14
 }
 
 
@@ -88,7 +88,7 @@ load_region_in_groups() {
 	echo "Downloading data from Region $1 to $2 inclusive"
 	for i in `seq $1 $2`
 	do
-		python src/portable-runner.py $i
+		python portable-runner.py $i
 	done
 }
 
@@ -132,7 +132,7 @@ load_feedback_in_loop() {
 	echo "Downloading feedback data in loop mode"
 	while true
 	do
-		python src/portable-runner.py feedback --advanced
+		python portable-runner.py feedback --advanced
 		sleep 1
 	done
 }
@@ -155,63 +155,63 @@ load_experimental_data_by_date() {
 
 
 if [ $1 = '--report' ]
-	then python src/portable-runner.py report $2;
+	then python portable-runner.py report $2;
 elif [ $1 = '--help' ]
 	then help_info
 elif [ $1 = '--all' ]
 	then load
 elif [ $1 = '--region' ]
-	then python src/portable-runner.py $2
+	then python portable-runner.py $2
 elif [ $1 = '--regionx' ] && [ $3 = '--range' ]
-	then python src/portable-runner.py region $2 start $4 end $5
+	then python portable-runner.py region $2 start $4 end $5
 elif [ $1 = '--regionx' ] && [ $3 = '--page' ]
-	then python src/portable-runner.py region $2 page $4
+	then python portable-runner.py region $2 page $4
 elif [ $1 = '--stats' ]
-	then python src/portable-runner.py stats
+	then python portable-runner.py stats
 elif [ $1 = '--watchlist' ]
-	then python src/portable-runner.py watchlist $2
+	then python portable-runner.py watchlist $2
 elif [ $1 = '--group' ]
 	then load_region_in_groups $2 $3
 elif [ $1 = '--query' ]
-	then python src/portable-util.py search $2 $3
+	then python portable-util.py search $2 $3
 elif [ $1 = '--chkdup' ]
-	then python src/portable-util.py duplicates $2
+	then python portable-util.py duplicates $2
 elif [ $1 = '--chkdup-all' ]
-	then python src/portable-util.py duplicates-all
+	then python portable-util.py duplicates-all
 elif [ $1 = '--fixdup' ]
-	then python src/portable-util.py duplicates-fix $2
+	then python portable-util.py duplicates-fix $2
 elif [ $1 = '--chkfeed' ]
-	then python src/portable-util.py corrupt-data $2
+	then python portable-util.py corrupt-data $2
 elif [ $1 = '--chkfeed-all' ]
-	then python src/portable-util.py corrupt-data-all
+	then python portable-util.py corrupt-data-all
 elif [ $1 = '--fixdup-all' ]
-	then python src/portable-util.py duplicates-fix-all
+	then python portable-util.py duplicates-fix-all
 elif [ $1 = '--history' ]
-	then python src/portable-util.py historysearch $2
+	then python portable-util.py historysearch $2
 elif [ $1 = '--master-file' ]
-	then python src/portable-util.py master-file
+	then python portable-util.py master-file
 elif [ $1 = '--feeds' ]
-	then python src/portable-util.py feeds
+	then python portable-util.py feeds
 elif [ $1 = '--image' ] && [ $2 = '--update' ]
-	then python src/portable-runner.py image update $3
+	then python portable-runner.py image update $3
 elif [ $1 = '--image' ] && [ $2 = '--update-british-data' ]
-	then python src/portable-runner.py image update-british-data
+	then python portable-runner.py image update-british-data
 elif [ $1 = '--image' ] && [ $2 = '--standard' ]
-	then python src/portable-runner.py image standard $3
+	then python portable-runner.py image standard $3
 elif [ $1 = '--image' ] && [ $2 = '--advanced' ]
-	then python src/portable-runner.py image advanced $3
+	then python portable-runner.py image advanced $3
 elif [ $1 = '--image' ] && [ $2 = '--master-file' ]
-	then python src/portable-runner.py image master-file $3
+	then python portable-runner.py image master-file $3
 elif [ $1 = '--image' ] && [ $2 = '--custom' ]
-	then python src/portable-runner.py image custom $3
+	then python portable-runner.py image custom $3
 elif [ $1 = '--image' ] && [ $2 = '--verify' ]
-	then python src/portable-runner.py image verify $3
+	then python portable-runner.py image verify $3
 elif [ $1 = '--image' ] && [ $2 = '--verify-empty-folders' ]
-	then python src/portable-runner.py image verify-empty-folders
+	then python portable-runner.py image verify-empty-folders
 elif [ $1 = '--image' ] && [ $2 = '--delete-empty-folders' ]
-	then python src/portable-runner.py image delete-empty-folders
+	then python portable-runner.py image delete-empty-folders
 elif [ $1 = '--image' ] && [ $2 = '--subgroup' ]
-	then python src/portable-runner.py image subgroup $3 $4
+	then python portable-runner.py image subgroup $3 $4
 elif [ $1 = '--loop' ]
 	then load_in_loop $2
 elif [ $1 = '--robomode' ]
@@ -223,26 +223,26 @@ elif [ $1 = '--experimental' ] && [ $2 = '--delete' ]
 elif [ $1 = '--experimental' ] && [ $2 = '--region' ]
 	then python ExpressConnector_v4.py $4 $3
 elif [ $1 = '--feedback' ] && [ $2 = '--standard' ]
-	then python src/portable-runner.py feedback --standard
+	then python portable-runner.py feedback --standard
 elif [ $1 = '--feedback' ] && [ $2 = '--robomode' ]
 	then load_feedback_in_loop
 elif [ $1 = '--feedback' ] && [ $2 = '--advanced' ]
-	then python src/portable-runner.py feedback --advanced
+	then python portable-runner.py feedback --advanced
 elif [ $1 = '--feedback' ] && [ $2 = '--userId' ]
-	then python src/portable-runner.py feedback --userId $3
+	then python portable-runner.py feedback --userId $3
 elif [ $1 = '--userids' ]
-	then python src/portable-runner.py userIds $2
+	then python portable-runner.py userIds $2
 elif [ $1 = '--load-userids' ]
-	then python src/portable-runner.py loadList ../static/watchlist.txt
+	then python portable-runner.py loadList ../static/watchlist.txt
 elif [ $1 = '--details' ]
-	then python src/portable-runner.py details
+	then python portable-runner.py details
 elif [ $1 = '--feedback-data' ] && [ $2 = '--f' ] && [ $4 = '--userId' ]
-	then python src/portable-util.py feedback-data today $3 $5
+	then python portable-util.py feedback-data today $3 $5
 elif [ $1 = '--get-british-list' ]
-	then python src/portable-util.py "get-british-list"
+	then python portable-util.py "get-british-list"
 elif [ $1 = '--get-ratings' ]
-	then python src/portable-runner.py get-ratings
+	then python portable-runner.py get-ratings
 elif [ $1 = '--sp-update']
-  then python src/portable-runner.py sp-update $2
+  then python portable-runner.py sp-update $2
 fi
 

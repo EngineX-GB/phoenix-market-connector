@@ -352,7 +352,7 @@ class PortableUtil:
             else:
                 print("\n[ERROR] Unknown operation\n")
 
-propertyFileReader = PropertyFileReader("properties/config.properties")
+propertyFileReader = PropertyFileReader(".././properties/config.properties")
 propertyManager = PropertyManager(propertyFileReader)
 portableUtil = PortableUtil(propertyManager)
 portableUtil.main(sys.argv)

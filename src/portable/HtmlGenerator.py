@@ -15,9 +15,9 @@ class HtmlGenerator:
 
     def execute(self, dateString):
         watchListRecords = self.getWatchListRecords(self.propertyManager.getStaticDirectory() + "/watchlist.txt")
-        listingHtml = self.readHtmlTemplate("src/template/listings.template")
-        mainHtml = self.readHtmlTemplate("src/template/main.template")
-        watchListHtml = self.readHtmlTemplate("src/template/listings.template")
+        listingHtml = self.readHtmlTemplate("template/listings.template")
+        mainHtml = self.readHtmlTemplate("template/main.template")
+        watchListHtml = self.readHtmlTemplate("template/listings.template")
         client_rows = ""
         watchlist_rows = ""
         client_row_count = 0
