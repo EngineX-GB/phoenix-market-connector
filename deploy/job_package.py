@@ -34,6 +34,10 @@ APPLICATION_VERSION = APPLICATION_CONFIG["version"]
 def zip(directoryPath, destinationPath):
     return shutil.make_archive(destinationPath + "/" + APPLICATION_NAME + "_" + APPLICATION_VERSION, "zip", directoryPath)
 
+def create_version_file(directoryPath, versionNumber):
+    f = open(directoryPath +"/version.txt", 'w', encoding='utf-8')
+    f.write(versionNumber)
+    f.close()
 
 if (__name__=="__main__"):
     if not os.path.exists(DISTRO_DIRECTORY):
@@ -45,4 +49,5 @@ if (__name__=="__main__"):
 
     result = zip(CODE_DIRECTORY, DISTRO_DIRECTORY)
     if result is not None:
+        create_version_file(DISTRO_DIRECTORY, APPLICATION_VERSION)
         print("[INFO] " + result + " is generated")
