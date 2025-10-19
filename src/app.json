@@ -1,7 +1,7 @@
 {
     "application": "phoenix-mobile-connector",
-    "version": "3.0.1",
-    "date": "2025-10-18",
+    "version": "3.0.6",
+    "date": "2025-10-19",
     "changeset": [
         "2022-11-27 | Adding app.json and application details parameter",
         "2022-11-29 | Enable page range downloading",
