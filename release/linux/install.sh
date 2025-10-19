@@ -13,12 +13,20 @@
 # sh install.sh --update <existing_installation_of_phoenix_directory> <new_version>
 # sh install.sh --update /c/users/dell/phoenix-v3 3.0.2
 #
+#
+# Perform an update on an existing installation assuming that the install.sh script is in the same level/
+# directory level as the root Phoenix-v3 folder (that contains the src folder)
+#
+# sh install.sh --update <new_version>
+# sh install.sh --update 3.0.2
+#
 # Sets up the latest python version and installs the dependencies.
 # sh install.sh --env-setup
 
 CURRENT_LOCATION=$(pwd)
 PHOENIX_HOME="${CURRENT_LOCATION}/phoenix-v3"
 VERSION="3.0.2"
+IS_UPDATE="false"
 
 if [ $1 = "--env-setup" ]; then
   echo "[INFO] Setting up python and dependencies...."
@@ -30,9 +38,10 @@ if [ $1 = "--env-setup" ]; then
   exit
 fi
 
-if [ $1 = "--update" ]; then
-  PHOENIX_HOME= $2
-  VERSION = $3
+
+if [ $1 = "--update-version" ]; then
+  VERSION=$2
+  IS_UPDATE="true"
   echo "[INFO] Running update to version ${VERSION}."
   echo "[INFO]"
   echo "[INFO] Phoenix Directory : ${PHOENIX_HOME}"
@@ -43,8 +52,31 @@ if [ $1 = "--update" ]; then
      echo "[ERROR] Directory ${PHOENIX_HOME} does not exist. Cannot proceed with update."
      exit
   fi
-  rm -fr ${PHOENIX_HOME}/src
-else
+  else
+    rm -fr "${PHOENIX_HOME}"/src
+fi
+
+
+if [ $1 = "--update" ]; then
+  PHOENIX_HOME=$2
+  VERSION=$3
+  IS_UPDATE="true"
+  echo "[INFO] Running update to version ${VERSION}."
+  echo "[INFO]"
+  echo "[INFO] Phoenix Directory : ${PHOENIX_HOME}"
+  echo "[INFO]"
+
+  # perform some checks before doing the update
+  if [ ! -d "${PHOENIX_HOME}/src" ]; then
+     echo "[ERROR] Directory ${PHOENIX_HOME} does not exist. Cannot proceed with update."
+     exit
+  fi
+  else
+    rm -fr "${PHOENIX_HOME}"/src
+fi
+
+#
+if [ "$IS_UPDATE" = "false" ]; then
   # do this ONLY if it's a fresh install (i.e. not an update)
   echo "[INFO] As this is a a fresh install, remove any old instances of the connector"
   rm -fr "${PHOENIX_HOME}"
