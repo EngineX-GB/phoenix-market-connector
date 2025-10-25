@@ -87,3 +87,11 @@ Report to view on chrome browser on the device:
 Motorola Device:
 Note the modern chrome browsers don't support launching local html pages that run with 'file:///' protocol. 
 
+
+---------------
+
+Version the software.
+
+1. Be on the master branch (containing your merged changes, or changes committed to the master branch)
+2. `cd` into <project-root-dir>\deploy.
+3. Run `deploy.bat`.
