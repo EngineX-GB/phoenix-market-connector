@@ -11,7 +11,7 @@
 #
 # Perform an update on an existing installation
 # sh install.sh --update <existing_installation_of_phoenix_directory> <new_version>
-# sh install.sh --update /c/users/dell/phoenix-v3 3.0.2
+# sh install.sh --update /c/users/dell/phoenix-v3 3.0.14
 #
 #
 # Perform an update on an existing installation assuming that the install.sh script is in the same level/
@@ -25,7 +25,7 @@
 
 CURRENT_LOCATION=$(pwd)
 PHOENIX_HOME="${CURRENT_LOCATION}/phoenix-v3"
-VERSION="3.0.2"
+VERSION="3.0.14"
 IS_UPDATE="false"
 
 if [ $1 = "--env-setup" ]; then
