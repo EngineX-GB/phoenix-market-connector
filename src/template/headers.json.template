@@ -1,0 +1,19 @@
+{
+    "authority": "{provider.domain.name}",
+    "cache-control":  "max-age=0",
+    "sec-ch-ua": "\"Google Chrome\";v=\"93\", \" Not;A Brand\";v=\"99\", \"Chromium\";v=\"93\"",
+    "sec-ch-ua-mobile":  "?0",
+    "sec-ch-ua-platform":  "Windows",
+    "upgrade-insecure-requests":  "1",
+    "origin":  "https://{provider.domain.name}",
+    "content-type":  "application/x-www-form-urlencoded",
+    "user-agent":  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36",
+    "accept":  "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+    "sec-fetch-site":  "same-origin",
+    "sec-fetch-mode":  "navigate",
+    "sec-fetch-user":  "?1",
+    "sec-fetch-dest":  "document",
+    "referer":  "https://{provider.domain.name}/Search.asp",
+    "accept-language":  "en-GB,en-US;q=0.9,en;q=0.8",
+    "cookie":  "gZJaD2x9o3dCP4x5EzUkcozxXj515LOdaWaa4TO261Mkh7g2dYYO1pxDnrxb5zI1Iw7LDN.JpNhY04ecWCWlVA0ddDGCzYnoVZWffUp2fwoKauMPA3wTH9kbS4pL3sR_5fi94hgXws5vhw3cN.I77gIIOIQtcSfeEzZY1DrlJduKVhBV3gcr.l4_.XLslI6N89JTcyI9YBod8JhHjGz0nPSSGx1_MLcpFChTCrLNUa0-1.1.2.1-1472841671-4uCact5N1JPGNePfcPmw7q_3pR7N2b7lEzVTIJvPSUn=ecnaraelc_fc ;86wFLUElF5Ch87us5O_6mO5norkTcVrfxc.GD5js9D5scPJoDP2uBYuLAju4Y1b3a1q9mgqyvELAOARe06tBg.P5pTKZDR_SP4_ZuIUftmS-1.1.0.1-0472841671-03DKv6bUpuODSXXDaLcwqSRupm7lEJAlt.QDjq9lC4H=mb_fc__ ;5102+rebotcO+62=etaDecnatpeccAetis ;D7%A6102FAF2956D2%45CBD2%9584D2%C453D2%8D96AB36B7%=DIS ;0=DIlarrefeR ;1=WRDIlarrefeR ;D7%A6102FAF2956D2%45CBD2%9584D2%C453D2%8D96AB36B7%=004583 ;D7%A6102FAF2956D2%45CBD2%9584D2%C453D2%8D96AB36B7%=CASFM"
+}

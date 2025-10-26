@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+        html {
+            margin:0;
+        }
+
+        body {
+            font-size:10pt;
+            font-family: calibri;
+            background: rgb(24, 34, 41);
+            color:white;
+        }
+        div#header {
+            background-image: linear-gradient(to bottom right, rgb(34, 127, 233), rgb(8, 4, 43));
+            color: white;
+        }
+        div#sectionListingHeader {
+            background: rgb(61, 124, 69);
+            color: white;
+        }
+        div#sectionWatchlistHeader {
+            background: rgb(216, 20, 20);
+            color: white;
+        }
+        .summaryPanel {
+            background-image: linear-gradient(to bottom right, rgb(46, 45, 45), rgb(94, 92, 92));
+            overflow:hidden;
+            display: flex;
+        }
+        .summaryNode {
+            text-align: center;
+            border-style: groove;
+            border-width: thin;
+            margin:10;
+            font-size: 6pt;
+            padding: 4px;
+        }
+        .logo {
+            font-style: italic;
+            font-weight: bold;
+        }
+    </style>
+    <script type="text/javascript">
+        function init() {
+            let height = window.innerHeight;
+            let width = window.innerWidth;
+            var embedElement = document.querySelector("embed")
+            embedElement.setAttribute("height", (height - (height * 0.01)) /2)
+            embedElement.setAttribute("width", width - (width * 0.01))
+
+            var embedElement2 = document.getElementById("list2")
+            embedElement2.setAttribute("height", (height - (height * 0.01)) /3)
+            embedElement2.setAttribute("width", width - (width * 0.01))
+
+        }
+    </script>
+</head>
+<body onload="init()">
+    <div id="header">
+        <span class=logo>Phoenix</span> Data Report
+    </div>
+    <div class="summaryPanel">
+        <div class=summaryNode>
+            <div class="summaryHeader">
+                Positions
+            </div>
+            <div class="summaryHeader">
+                ${POSITION_COUNT}
+            </div>
+        </div>
+        <div class=summaryNode>
+            <div class="summaryHeader">
+                Watchlist
+            </div>
+            <div class="summaryHeader">
+                ${WATCHLIST_COUNT}
+            </div>
+        </div>
+        <div class=summaryNode>
+            <div class="summaryHeader">
+                Loaded on
+            </div>
+            <div class="summaryHeader">
+                ${LOAD_DATE}
+            </div>
+        </div>
+    </div>
+    <div>
+        <div>
+            <div id="sectionListingHeader">
+                Todays Positions
+            </div>
+            <embed id="embeddedpane" type="text/html" src="listings.html" height="200" width="200">
+        </div>
+        <div>
+            <div id="sectionWatchlistHeader">
+                Watch List
+            </div>
+            <embed id="list2" type="text/html" src="watchlist.html" height="200" width="200">
+        </div>
+    </div>
+</body>
+</html>

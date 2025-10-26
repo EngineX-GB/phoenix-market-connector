@@ -1,0 +1,3 @@
+SET PYTHON_HOME=C:\Users\dell\AppData\Local\Programs\Python\Python310\Scripts
+SET PYTHON_SCRIPTS=%PYTHON_HOME%\Scripts
+SET PATH=%PATH%;%PYTHON_HOME%;%PYTHON_SCRIPTS%
