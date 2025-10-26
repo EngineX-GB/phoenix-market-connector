@@ -95,3 +95,15 @@ Version the software.
 1. Be on the master branch (containing your merged changes, or changes committed to the master branch)
 2. `cd` into <project-root-dir>\deploy.
 3. Run `deploy.bat`.
+
+
+
+-------------------
+
+## Create the docker image for the build environment (Linux)
+
+1. cd into `deploy` folder. You will see the Dockerfile in here.
+2. Run `docker build -t phoenix-market-connector-linux .`
+    This will build the docker image called `phoenix-market-connector-linux'
+3. Run `docker images` to verify that the image is created locally
+4. To run this image in interactive mode, run `docker run -it phoenix-market-connector-linux`
