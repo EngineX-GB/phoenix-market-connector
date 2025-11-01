@@ -23,6 +23,9 @@ import json
 from model.PhoenixClient import PhoenixClient
 from util.PhoenixUtil import PhoenixUtil
 
+from PathController import PathController
+
+
 class PhoenixMobileConnector:
 
     def __init__(self, propertyManager, IPersistence):
@@ -278,7 +281,7 @@ class PhoenixMobileConnector:
         # read the app.json file
         # Note that needs to be fixed based on the where the cmd prompt is running from a particular directory
         # as run.sh run from the scripts folder.
-        f = open("app.json")
+        f = open(PathController.resource_path("app.json"))
         appConfig = json.load(f)
         f.close()
         print("[INFO] Application : " + appConfig["application"])
