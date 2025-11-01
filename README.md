@@ -107,3 +107,30 @@ Version the software.
     This will build the docker image called `phoenix-market-connector-linux'
 3. Run `docker images` to verify that the image is created locally
 4. To run this image in interactive mode, run `docker run -it phoenix-market-connector-linux`
+
+-------------------
+
+## Build the linux distro within the docker container.
+
+1. Run the docker image `phoenix-market-connector-linux`
+2. Ensure that the following are installed (or are already installed in the image). If not, update the image:
+
+3. apt-get update -y
+apt-get install python3 -y
+apt-get install pip -y
+pip install beautifulsoup4==4.12.3 -y
+pip install requests==2.31.0 -y
+pip install cloudscraper==1.2.71 -y
+pip install pyinstaller -y
+apt-get install git -y
+apt install python-is-python3 -y
+apt-get install nano -y
+apt-get install curl -y
+apt-get install unzip -y
+
+4. Pull the code from the master branch from the git repository.
+5. Once pulled, `cd` into the `phoenix-market-connector` (project home) directory
+6. `cd` into src
+7. Run the following command to create the linux binary for the market connector:
+
+`pyinstaller --onefile --add-data=app.json:. --add-data=template/config.properties.template:template --add-data=template/headers.json.template:template --name=market-connector portable-runner.py`
