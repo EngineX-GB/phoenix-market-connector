@@ -7,6 +7,7 @@ from portable.HtmlGenerator import HtmlGenerator
 from loader.PhoenixFeedbackFetcher import PhoenixFeedbackFetcher
 from loader.PhoenixImageFetcher import PhoenixImageFetcher
 from portable.WatchListManager import WatchListManager
+from PathController import PathController
 from util.PhoenixUtil import PhoenixUtil
 from util.PropertyFileReader import PropertyFileReader
 from model.PropertyManager import PropertyManager
@@ -32,7 +33,7 @@ def create_default_properties(config_file_path: str, template_file_path: str, do
         print("[WARN] " + config_file_path + " file does not exist. Creating a default one.")
         os.makedirs(".././properties", exist_ok=True)
         # read the template file
-        config_template = open(template_file_path, 'r', encoding='UTF-8')
+        config_template = open(PathController.resource_path(template_file_path), 'r', encoding='UTF-8')
         new_lines = list()
         lines = config_template.readlines()
         for line in lines:
