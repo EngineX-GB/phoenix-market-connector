@@ -10,6 +10,7 @@ class PropertyFileReader:
             key = property[0]
             value = property[1]
             self.properties[key] = value
+        f.close()
 
     def get(self, key):
         return self.properties[key]
