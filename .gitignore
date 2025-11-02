@@ -5,3 +5,4 @@ src/.vscode/
 deploy/distro/
 release/linux/phoenix-v3/
 properties/
+build/

@@ -9,7 +9,14 @@ rem -- version the code
 python job_versioning.py --appDirectory .././src
 
 rem -- package the code
-python job_package.py .././src
+python job_package.py --src .././src
+
+rem -- run pyinstaller to generate the executable
+cd ..
+pyinstaller --onefile --add-data=.././src/app.json:. --add-data=.././src/template/config.properties.template:template --add-data=.././src/template/headers.json.template:template --name=market-connector .././src/portable-runner.py
+
+rem -- package the binary into a zip
+python job_package.py --binary .././src
 
 set /p version=<distro/version.txt
 
