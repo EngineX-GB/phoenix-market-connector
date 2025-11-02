@@ -3,6 +3,8 @@ app-data/
 src/.idea/
 src/.vscode/
 deploy/distro/
+deploy/build
+deploy/dist
 release/linux/phoenix-v3/
 properties/
 build/

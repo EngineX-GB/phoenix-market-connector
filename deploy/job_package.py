@@ -70,7 +70,7 @@ if __name__ == "__main__":
     APPLICATION_VERSION = APPLICATION_CONFIG["version"]
 
     if not os.path.exists(DISTRO_DIRECTORY):
-        print("[ERROR] " + DISTRO_DIRECTORY + " does not exist")
+        print("[WARN] " + DISTRO_DIRECTORY + " does not exist. Creating it now.")
         os.makedirs(DISTRO_DIRECTORY, exist_ok=True)
     if not os.path.exists(CODE_DIRECTORY):
         print("[ERROR] " + CODE_DIRECTORY + " does not exist")
