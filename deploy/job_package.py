@@ -84,7 +84,7 @@ if __name__ == "__main__":
 
     elif FUNCTION_PARAMETER == "--binary":
         print("OS NAME : " + os.name)
-        if not os.path.exists(".././dist/market-connector" + get_binary_extension()):
+        if not os.path.exists("./dist/market-connector" + get_binary_extension()):
             print("[ERROR] Binary file does not exist. Ending script.")
             exit(1)
         result = zip("./dist", DISTRO_DIRECTORY, APPLICATION_NAME + "-" + check_os_name(), APPLICATION_VERSION)
