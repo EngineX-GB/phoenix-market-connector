@@ -1,0 +1,6 @@
+app-data/
+build/
+dist/
+distro/
+properties/
+*.spec
