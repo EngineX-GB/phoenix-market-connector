@@ -71,6 +71,7 @@ if __name__ == "__main__":
 
     if not os.path.exists(DISTRO_DIRECTORY):
         print("[ERROR] " + DISTRO_DIRECTORY + " does not exist")
+        os.makedirs(DISTRO_DIRECTORY, exist_ok=True)
         sys.exit(1)
     if not os.path.exists(CODE_DIRECTORY):
         print("[ERROR] " + CODE_DIRECTORY + " does not exist")
