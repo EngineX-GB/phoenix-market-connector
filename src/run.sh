@@ -5,6 +5,9 @@
 # sh .././run.sh --report											Generates Client and Watch list report for London Region
 # sh .././run.sh --group <start_region_number> <end_region_number>	Downloads data between start_region_number and end_region_number
 # sh .././run.sh --stats											Get Stats on Available data (stored on the service provider)
+#
+# 2025-11-02: This script is used for running the code referencing the python interpreter using the python files.
+#             This is not to be used with the final release binary
 
 load() {
 	python portable-runner.py 1
