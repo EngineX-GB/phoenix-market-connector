@@ -5,6 +5,11 @@ rem Git/ Git Bash needs to be set to the PATH environment variable for this scri
 @echo off
 
 call .././setenv.bat
+
+rem -- delete old build files
+rmdir /s /q build
+rmdir /s /q dist
+
 rem -- version the code
 python job_versioning.py --appDirectory .././src
 

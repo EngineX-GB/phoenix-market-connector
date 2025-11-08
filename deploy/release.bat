@@ -20,4 +20,18 @@ git push origin master
 rem change directory back to the deploy folder
 cd deploy
 
+rem publish artefacts
+
+set "BASE_DIR=%~dp0"
+set "WINDOWS_ZIP=%BASE_DIR%distro\phoenix-mobile-connector-windows_%version%.zip"
+set "LINUX_ZIP=%BASE_DIR%distro\phoenix-mobile-connector-linux_%version%.zip"
+set "RELEASE_NOTES=Release %VERSION%"
+
+call deploy.bat ^
+    %version% ^
+    "%WINDOWS_ZIP%" ^
+    "%LINUX_ZIP%" ^
+    "%RELEASE_NOTES%" ^
+    "%RELEASE_NOTES%"
+
 @echo on
