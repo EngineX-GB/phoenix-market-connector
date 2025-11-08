@@ -134,3 +134,26 @@ apt-get install unzip -y
 7. Run the following command to create the linux binary for the market connector:
 
 `pyinstaller --onefile --add-data=app.json:. --add-data=template/config.properties.template:template --add-data=template/headers.json.template:template --name=market-connector portable-runner.py`
+
+------
+
+## How to Build and deploy
+
+In Windows:
+1. Run build.bat
+It will version the src by updating app.json
+Create the zip containing the src
+Create the zip containing the Windows binary using PyInstaller. It will add the zip to the distro folder.
+
+2. Go to phoenix-mobile-connector-linux container:
+docker run -it -v <USER_HOME_DIR>/Development/code/python/phoenix-market-connector:/apps phoenix-market-connector-linux:latest
+cd /apps/deploy folder
+run sh build.sh
+It will create the linux distro and zip it up. It will add the zip to the distro folder.
+
+3. Go back to windows.
+4. Now run release.bat.
+It will version the branch with the new version tag using the app.json file
+push changes to git
+It will also create a release using gh cli and push the release to gh.
+Note you must have a scm-config.properties file that contains credentials/ token to push to git.

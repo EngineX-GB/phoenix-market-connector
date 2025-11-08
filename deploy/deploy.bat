@@ -2,6 +2,7 @@
 : Saturday 8th November 2025
 : This script will create the release artefacts
 : Note, scm-config.properties must exist with the correct properties in the file.
+: This file should not be invoked manually. It's run from release.bat
 
 @echo off
 
