@@ -1,6 +1,6 @@
 {
     "application": "phoenix-mobile-connector",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "date": "2025-11-08",
     "changeset": [
         "2022-11-27 | Adding app.json and application details parameter",
