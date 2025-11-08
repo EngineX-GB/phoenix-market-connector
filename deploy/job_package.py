@@ -90,4 +90,5 @@ if __name__ == "__main__":
         result = zip("./dist", DISTRO_DIRECTORY, APPLICATION_NAME + "-" + check_os_name(), APPLICATION_VERSION)
         if result is not None:
             # the version file should be created in the previous step of running with the --src flag
+            create_version_file(DISTRO_DIRECTORY, APPLICATION_VERSION)
             print("[INFO] " + result + " is generated")
