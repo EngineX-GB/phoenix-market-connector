@@ -13,10 +13,6 @@
 # sh install.sh --update <existing_installation_of_phoenix_directory> <new_version>
 # sh install.sh --update /c/users/dell/phoenix-v3 3.0.14
 #
-# To install a local copy of the connector to the filesystem.
-# sh install.sh --local-install <directory-to-zip>
-# Note that the script must be local to the directory that you want to install the connector in.
-#
 #
 # Perform an update on an existing installation assuming that the install.sh script is in the same level/
 # directory level as the root Phoenix-v3 folder (that contains the src folder)
@@ -52,12 +48,31 @@ if [ $1 = "--update-version" ]; then
   echo "[INFO]"
 
   # perform some checks before doing the update
-  if [ ! -f "${PHOENIX_HOME}/market-connector" ]; then
-     echo "[ERROR] Market connector in ${PHOENIX_HOME} does not exist. Cannot proceed with update."
+  if [ ! -d "${PHOENIX_HOME}/src" ]; then
+     echo "[ERROR] Directory ${PHOENIX_HOME} does not exist. Cannot proceed with update."
      exit
   fi
   else
-    rm -f "${PHOENIX_HOME}"/market-connector
+    rm -fr "${PHOENIX_HOME}"/src
+fi
+
+
+if [ $1 = "--update" ]; then
+  PHOENIX_HOME=$2
+  VERSION=$3
+  IS_UPDATE="true"
+  echo "[INFO] Running update to version ${VERSION}."
+  echo "[INFO]"
+  echo "[INFO] Phoenix Directory : ${PHOENIX_HOME}"
+  echo "[INFO]"
+
+  # perform some checks before doing the update
+  if [ ! -d "${PHOENIX_HOME}/src" ]; then
+     echo "[ERROR] Directory ${PHOENIX_HOME} does not exist. Cannot proceed with update."
+     exit
+  fi
+  else
+    rm -fr "${PHOENIX_HOME}"/src
 fi
 
 #
@@ -67,28 +82,7 @@ if [ "$IS_UPDATE" = "false" ]; then
   rm -fr "${PHOENIX_HOME}"
 fi
 
-if [ $1 = "--local-install" ]; then
-  echo "[INFO] Performing a local install of the connector"
-  INSTALL_DIR="${PHOENIX_HOME}"
-  TEMP_DIR="${PHOENIX_HOME}/install-temp"
-  mkdir -p "$INSTALL_DIR"
-  mkdir -p "$TEMP_DIR"
-  DISTRO_FILE_PATH=$2
-  cp "$DISTRO_FILE_PATH" "$TEMP_DIR/phoenix.zip"
-  unzip "${TEMP_DIR}/phoenix.zip" -d "${INSTALL_DIR}"
-  if [ -d "${PHOENIX_HOME}/properties" ]; then
-    echo "[INFO] Required configuration files exist. No further action required."
-  else
-    echo "[WARN] No existing config.properties file exists. Run application to automatically create one."
-  fi
-
-  # perform clean up and remove temp folder
-  echo "[INFO] Removing temporary files."
-  rm -fr "${TEMP_DIR}"
-  exit
-fi
-
-INSTALL_DIR="${PHOENIX_HOME}"
+INSTALL_DIR="${PHOENIX_HOME}/src"
 TEMP_DIR="${PHOENIX_HOME}/install-temp"
 mkdir -p "$INSTALL_DIR"
 mkdir -p "$TEMP_DIR"
@@ -99,9 +93,9 @@ if [ $? -eq 0 ]; then
     unzip "${TEMP_DIR}/phoenix.zip" -d "${INSTALL_DIR}"
 
     if [ -d "${PHOENIX_HOME}/properties" ]; then
-      echo "[INFO] Required configuration files exist. No further action required."
+      echo "[INFO] config.properties folder exists."
     else
-      echo "[WARN] No existing config.properties file exists. Run application to automatically create one."
+      echo "[WARN] No existing config.properties file exists. Ensure one is created before using the connector."
     fi
 
     # perform clean up and remove temp folder

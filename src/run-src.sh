@@ -10,20 +10,20 @@
 #             This is not to be used with the final release binary
 
 load() {
-	./market-connector 1
+	python portable-runner.py 1
 	python HtmlGenerator.py
-	./market-connector 2
-	./market-connector 3
-	./market-connector 4
-	./market-connector 5
-	./market-connector 6
-	./market-connector 7
-	./market-connector 8
-	./market-connector 9
-	./market-connector 10
-	./market-connector 11
-	./market-connector 12
-	./market-connector 14
+	python portable-runner.py 2
+	python portable-runner.py 3
+	python portable-runner.py 4
+	python portable-runner.py 5
+	python portable-runner.py 6
+	python portable-runner.py 7
+	python portable-runner.py 8
+	python portable-runner.py 9
+	python portable-runner.py 10
+	python portable-runner.py 11
+	python portable-runner.py 12
+	python portable-runner.py 14
 }
 
 
@@ -91,7 +91,7 @@ load_region_in_groups() {
 	echo "Downloading data from Region $1 to $2 inclusive"
 	for i in `seq $1 $2`
 	do
-		./market-connector $i
+		python portable-runner.py $i
 	done
 }
 
@@ -135,7 +135,7 @@ load_feedback_in_loop() {
 	echo "Downloading feedback data in loop mode"
 	while true
 	do
-		./market-connector feedback --advanced
+		python portable-runner.py feedback --advanced
 		sleep 1
 	done
 }
@@ -157,21 +157,21 @@ load_experimental_data_by_date() {
 }
 
 if [ $1 = '--report' ]
-	then ./market-connector report $2;
+	then python portable-runner.py report $2;
 elif [ $1 = '--help' ]
 	then help_info
 elif [ $1 = '--all' ]
 	then load
 elif [ $1 = '--region' ]
-	then ./market-connector $2
+	then python portable-runner.py $2
 elif [ $1 = '--regionx' ] && [ $3 = '--range' ]
-	then ./market-connector region $2 start $4 end $5
+	then python portable-runner.py region $2 start $4 end $5
 elif [ $1 = '--regionx' ] && [ $3 = '--page' ]
-	then ./market-connector region $2 page $4
+	then python portable-runner.py region $2 page $4
 elif [ $1 = '--stats' ]
-	then ./market-connector stats
+	then python portable-runner.py stats
 elif [ $1 = '--watchlist' ]
-	then ./market-connector watchlist $2
+	then python portable-runner.py watchlist $2
 elif [ $1 = '--group' ]
 	then load_region_in_groups $2 $3
 elif [ $1 = '--query' ]
@@ -195,25 +195,25 @@ elif [ $1 = '--master-file' ]
 elif [ $1 = '--feeds' ]
 	then python portable-util.py feeds
 elif [ $1 = '--image' ] && [ $2 = '--update' ]
-	then ./market-connector image update $3
+	then python portable-runner.py image update $3
 elif [ $1 = '--image' ] && [ $2 = '--update-british-data' ]
-	then ./market-connector image update-british-data
+	then python portable-runner.py image update-british-data
 elif [ $1 = '--image' ] && [ $2 = '--standard' ]
-	then ./market-connector image standard $3
+	then python portable-runner.py image standard $3
 elif [ $1 = '--image' ] && [ $2 = '--advanced' ]
-	then ./market-connector image advanced $3
+	then python portable-runner.py image advanced $3
 elif [ $1 = '--image' ] && [ $2 = '--master-file' ]
-	then ./market-connector image master-file $3
+	then python portable-runner.py image master-file $3
 elif [ $1 = '--image' ] && [ $2 = '--custom' ]
-	then ./market-connector image custom $3
+	then python portable-runner.py image custom $3
 elif [ $1 = '--image' ] && [ $2 = '--verify' ]
-	then ./market-connector image verify $3
+	then python portable-runner.py image verify $3
 elif [ $1 = '--image' ] && [ $2 = '--verify-empty-folders' ]
-	then ./market-connector image verify-empty-folders
+	then python portable-runner.py image verify-empty-folders
 elif [ $1 = '--image' ] && [ $2 = '--delete-empty-folders' ]
-	then ./market-connector image delete-empty-folders
+	then python portable-runner.py image delete-empty-folders
 elif [ $1 = '--image' ] && [ $2 = '--subgroup' ]
-	then ./market-connector image subgroup $3 $4
+	then python portable-runner.py image subgroup $3 $4
 elif [ $1 = '--loop' ]
 	then load_in_loop $2
 elif [ $1 = '--robomode' ]
@@ -225,25 +225,25 @@ elif [ $1 = '--experimental' ] && [ $2 = '--delete' ]
 elif [ $1 = '--experimental' ] && [ $2 = '--region' ]
 	then python ExpressConnector_v4.py $4 $3
 elif [ $1 = '--feedback' ] && [ $2 = '--standard' ]
-	then ./market-connector feedback --standard
+	then python portable-runner.py feedback --standard
 elif [ $1 = '--feedback' ] && [ $2 = '--robomode' ]
 	then load_feedback_in_loop
 elif [ $1 = '--feedback' ] && [ $2 = '--advanced' ]
-	then ./market-connector feedback --advanced
+	then python portable-runner.py feedback --advanced
 elif [ $1 = '--feedback' ] && [ $2 = '--userId' ]
-	then ./market-connector feedback --userId $3
+	then python portable-runner.py feedback --userId $3
 elif [ $1 = '--userids' ]
-	then ./market-connector userIds $2
+	then python portable-runner.py userIds $2
 elif [ $1 = '--load-userids' ]
-	then ./market-connector loadList ../static/watchlist.txt
+	then python portable-runner.py loadList ../static/watchlist.txt
 elif [ $1 = '--details' ]
-	then ./market-connector details
+	then python portable-runner.py details
 elif [ $1 = '--feedback-data' ] && [ $2 = '--f' ] && [ $4 = '--userId' ]
 	then python portable-util.py feedback-data today $3 $5
 elif [ $1 = '--get-british-list' ]
 	then python portable-util.py "get-british-list"
 elif [ $1 = '--get-ratings' ]
-	then ./market-connector get-ratings
+	then python portable-runner.py get-ratings
 elif [ $1 = '--sp-update']
-  then ./market-connector sp-update $2
+  then python portable-runner.py sp-update $2
 fi
