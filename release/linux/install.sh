@@ -28,7 +28,7 @@
 # sh install.sh --env-setup
 
 CURRENT_LOCATION=$(pwd)
-PHOENIX_HOME="${CURRENT_LOCATION}/phoenix-v3"
+PHOENIX_HOME="${CURRENT_LOCATION}/phoenix-v3/bin"
 VERSION="3.0.14"
 IS_UPDATE="false"
 
@@ -117,7 +117,7 @@ if [ $1 = "--local-install" ]; then
   DISTRO_FILE_PATH=$2
   cp "$DISTRO_FILE_PATH" "$TEMP_DIR/phoenix.zip"
   unzip "${TEMP_DIR}/phoenix.zip" -d "${INSTALL_DIR}"
-  if [ -d "${PHOENIX_HOME}/properties" ]; then
+  if [ -d "${PHOENIX_HOME}/../properties" ]; then
     echo "[INFO] Required configuration files exist. No further action required."
   else
     echo "[WARN] No existing config.properties file exists. Run application to automatically create one."
