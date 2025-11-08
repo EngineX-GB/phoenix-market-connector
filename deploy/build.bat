@@ -1,8 +1,8 @@
+@echo off
+
 rem In the Windows Command Prompt, execute this script from the deploy directory
 rem not from the project root directory
 rem Git/ Git Bash needs to be set to the PATH environment variable for this script to run properly.
-
-@echo off
 
 call .././setenv.bat
 
@@ -21,3 +21,5 @@ pyinstaller --onefile --add-data=.././src/app.json:. --add-data=.././src/templat
 
 rem -- package the binary into a zip
 python job_package.py --binary .././src
+
+@echo on

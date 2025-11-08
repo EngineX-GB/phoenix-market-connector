@@ -47,7 +47,7 @@ for /f "delims=" %%A in ('gh --version') do (
 if "%found%"=="true" (
     echo Connect to Github CLI and releasing artefact
     :: Removed the gh auth login statement to see if it's needed is we are setting credentials in memory
-    gh release create %TAG_VERSION% %WIN_DISTRO_FILE% %LINUX_DISTRO_FILE% --notes "temp release" -t "temp-release-1"
+    gh release create %TAG_VERSION% %WIN_DISTRO_FILE% %LINUX_DISTRO_FILE% --notes %RELEASE_NOTES% -t %RELEASE_TITLE%
 ) else (
     echo Could not detect Github CLI on build machine.
 )

@@ -1,3 +1,4 @@
+@echo off
 
 set /p version=<distro/version.txt
 
@@ -25,7 +26,7 @@ rem publish artefacts
 set "BASE_DIR=%~dp0"
 set "WINDOWS_ZIP=%BASE_DIR%distro\phoenix-mobile-connector-windows_%version%.zip"
 set "LINUX_ZIP=%BASE_DIR%distro\phoenix-mobile-connector-linux_%version%.zip"
-set "RELEASE_NOTES=Release %VERSION%"
+set "RELEASE_NOTES=Release %version%"
 
 call deploy.bat ^
     %version% ^
