@@ -158,5 +158,15 @@ push changes to git
 It will also create a release using gh cli and push the release to gh.
 Note you must have a scm-config.properties file that contains credentials/ token to push to git.
 
-###Note:
+### Note:
 You must create a scm-config.properties file in the deploy folder with the key value pair.
+
+------------
+
+## URL to download installation script
+
+Linux (binary):
+`curl -O https://raw.githubusercontent.com/EngineX-GB/phoenix-market-connector/master/release/linux/install.sh`
+
+Linux (portable)
+`curl -O https://raw.githubusercontent.com/EngineX-GB/phoenix-market-connector/master/release/linux/install-src.sh`
