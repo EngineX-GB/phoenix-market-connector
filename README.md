@@ -157,3 +157,6 @@ It will version the branch with the new version tag using the app.json file
 push changes to git
 It will also create a release using gh cli and push the release to gh.
 Note you must have a scm-config.properties file that contains credentials/ token to push to git.
+
+###Note:
+You must create a scm-config.properties file in the deploy folder with the key value pair.

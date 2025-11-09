@@ -28,7 +28,8 @@
 # sh install.sh --env-setup
 
 CURRENT_LOCATION=$(pwd)
-PHOENIX_HOME="${CURRENT_LOCATION}/phoenix-v3/bin"
+APPLICATION_NAME="phoenix-market-connector"
+PHOENIX_HOME="${CURRENT_LOCATION}/${APPLICATION_NAME}/bin"
 VERSION="3.0.14"
 IS_UPDATE="false"
 
@@ -134,7 +135,7 @@ TEMP_DIR="install-temp"
 mkdir -p "$INSTALL_DIR"
 mkdir -p "$TEMP_DIR"
 # download file
-curl -L -o ${TEMP_DIR}/phoenix.zip https://github.com/EngineX-GB/phoenix-market-connector/releases/download/${VERSION}/phoenix-mobile-connector-linux_${VERSION}.zip
+curl -L -o ${TEMP_DIR}/phoenix.zip https://github.com/EngineX-GB/${APPLICATION_NAME}/releases/download/${VERSION}/${APPLICATION_NAME}-linux_${VERSION}.zip
 # unzip
 if [ $? -eq 0 ]; then
     unzip "${TEMP_DIR}/phoenix.zip" -d "${INSTALL_DIR}"
