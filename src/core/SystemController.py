@@ -25,7 +25,7 @@ class SystemController:
             thread_name = "LOAD_FEEDBACK"
             if self.is_thread_running(thread_name):
                 return {"error": "Feedback loading is currently in progress."}
-            load_thread = threading.Thread(target=self.feedback_loader.main, args=["--standard"], name=thread_name)
+            load_thread = threading.Thread(target=self.feedback_loader.main, args=(["feedback","--standard"],), name=thread_name)
             load_thread.start()
             return {"started", "Feedback loading has started."}
 
