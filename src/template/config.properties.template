@@ -11,3 +11,4 @@ headers.json.file.path=.././properties/headers.json
 ukp.user.profile.url=https://{ukp.domain.name}/index.php?action=serviceprovider;id=
 static.directory=.././app-data/static
 reports.directory=.././app-data/reports
+ingestion.service.endpoint=http://localhost:8000

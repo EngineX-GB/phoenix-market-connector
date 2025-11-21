@@ -14,10 +14,11 @@ class PropertyManager:
         self.reportsDirectory = propertyFileReader.get("reports.directory")
         self.feedsFeedbackDirectory = propertyFileReader.get("feeds.feedback.directory")
         self.feedsFeedbackEpgDirectory = propertyFileReader.get("feeds.feedback.epg.directory")
-        
+        self.ingestionServiceEndpoint = propertyFileReader.get("ingestion.service.endpoint")
+
     def getProviderUrl(self):
         return self.providerUrl
-    
+
     def getRequestPayload(self):
         return self.requestPayload
 
@@ -53,3 +54,6 @@ class PropertyManager:
 
     def getFeedsFeedbackEpgDirectory(self):
         return self.feedsFeedbackEpgDirectory
+
+    def getIngestionServiceEndpoint(self):
+        return self.ingestionServiceEndpoint
