@@ -14,6 +14,10 @@ class SystemController:
             # check that there is no existing thread running this process:
             if self.is_thread_running(thread_name):
                 return {"error": "A load for region " + parameter + " is currently in progress."}
+
+            # initialise required I/O for this workflow
+            self.connector.start()
+
             load_thread = threading.Thread(target=self.connector.main, args=(parameter,), name=thread_name)
             load_thread.start()
             return {"started", "A load for region " + parameter + " has started."}
