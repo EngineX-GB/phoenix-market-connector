@@ -19,6 +19,9 @@ python job_package.py --src .././src
 rem -- run pyinstaller to generate the executable
 pyinstaller --onefile --add-data=.././src/app.json:. --add-data=.././src/template/config.properties.template:template --add-data=.././src/template/headers.json.template:template --name=market-connector .././src/portable-runner.py
 
+rem -- run pyinstaller to generate the executable (for the service version)
+pyinstaller --onefile --add-data=.././src/app.json:. --add-data=.././src/template/config.properties.template:template --add-data=.././src/template/headers.json.template:template --hidden-import=uvicorn --hidden-import=fastapi --hidden-import=service-runner --name=market-connector-service .././src/service-runner.py
+
 rem -- package the binary into a zip
 python job_package.py --binary .././src
 
