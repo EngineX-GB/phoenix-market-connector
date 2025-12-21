@@ -11,7 +11,7 @@
 
 load() {
 	python portable-runner.py 1
-	python HtmlGenerator.py
+	python portable-runner.py report
 	python portable-runner.py 2
 	python portable-runner.py 3
 	python portable-runner.py 4
@@ -235,7 +235,7 @@ elif [ $1 = '--feedback' ] && [ $2 = '--userId' ]
 elif [ $1 = '--userids' ]
 	then python portable-runner.py userIds $2
 elif [ $1 = '--load-userids' ]
-	then python portable-runner.py loadList ../static/watchlist.txt
+	then python portable-runner.py loadList .././app-data/static/watchlist.txt
 elif [ $1 = '--details' ]
 	then python portable-runner.py details
 elif [ $1 = '--feedback-data' ] && [ $2 = '--f' ] && [ $4 = '--userId' ]
