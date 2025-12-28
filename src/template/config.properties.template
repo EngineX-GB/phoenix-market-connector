@@ -1,8 +1,12 @@
 provider.url=https://{provider.domain.name}
+api.provider.url=https://{api.provider.domain.name}
+ts.api.provider.url=https://{ts.api.provider.domain.name}
 request.payload=0=SS&1=FD&1202F2%90F2%40=yadoTetdh&eliforP=baThcraeS&0=hcraeStsiLtoH&1=oNegaP&2=DIdnammoC&0=DItsiLtoHtni&3002F2%10F2%10=detadpUtsaLobc&=aerAedoCtsoPrts&=edoCtsoPleSrts&=seliMtni&=yaDrehtonAelbaliavAetd&=oTetaRthginrevOtni&=morFetaRthginrevOtni&=oTetaRylruoHtni&=morFetaRylruoHtni&=oTetaRruoHflaHtni&=morFetaRruoHflaHtni&82=DIycnerruCgnikooBobc&=ecirPteeMtni&=noitaruDteeMtni&X=emiTteeMetd&=etaDteeMetd&=24_noitseuq&=72_noitseuq&92%tceles82%=94_noitseuq&92%tceles82%=76_noitseuq&92%tceles82%=41_noitseuq&92%tceles82%=18_noitseuq&92%tceles82%=08_noitseuq&92%tceles82%=08_CG&92%tceles82%=31_noitseuq&92%tceles82%=21_noitseuq&92%tceles82%=21_CG&92%tceles82%=85_noitseuq&92%tceles82%=85_CG&92%tceles82%=74_noitseuq&92%tceles82%=74_CG&92%tceles82%=64_noitseuq&92%tceles82%=64_CG&92%tceles82%=11_noitseuq&92%tceles82%=11_CG&92%tceles82%=28_noitseuq&92%tceles82%=01_noitseuq&92%tceles82%=9_noitseuq&92%tceles82%=8_noitseuq&92%tceles82%=7_noitseuq&=75_noitseuq&92%tceles82%=5_noitseuq&92%tceles82%=4_noitseuq&=3_noitseuq&=2_noitseuq&=48_noitseuq&=07_noitseuq&=96_noitseuq&92%tceles82%=1_noitseuq&0=sgnitaRodr&4=yBredrOodr&=oTegAtni&=morFegAtni&=emanresUleSrts&X=ecniSnigoLtsaLobc&1=hcraeSyeKodr&=sdrowyeKrts&0=DIPAobc&0=DICSobc&1=edulcnIytilanoitaNodr&0=DIytilanoitaNobc&=nwoTrts&0=DIytnuoCobc&}di.noiger{$=DInoigeRobc&851=DIyrtnuoCobc&NO=yadoTelbaliavAxbc&NO=trocsEsIleSxbc&2=DIredneGxbc
 request.payload.next=0=SS&1=FD&1202F2%90F2%40=yadoTetdh&eliforP=baThcraeS&0=hcraeStsiLtoH&}rebmun.egap{$=oNegaP&2=DIdnammoC&0=DItsiLtoHtni&3002F2%10F2%10=detadpUtsaLobc&=aerAedoCtsoPrts&=edoCtsoPleSrts&=seliMtni&=yaDrehtonAelbaliavAetd&=oTetaRthginrevOtni&=morFetaRthginrevOtni&=oTetaRylruoHtni&=morFetaRylruoHtni&=oTetaRruoHflaHtni&=morFetaRruoHflaHtni&82=DIycnerruCgnikooBobc&=ecirPteeMtni&=noitaruDteeMtni&X=emiTteeMetd&=etaDteeMetd&=24_noitseuq&=72_noitseuq&92%tceles82%=94_noitseuq&92%tceles82%=76_noitseuq&92%tceles82%=41_noitseuq&92%tceles82%=18_noitseuq&92%tceles82%=08_noitseuq&92%tceles82%=08_CG&92%tceles82%=31_noitseuq&92%tceles82%=21_noitseuq&92%tceles82%=21_CG&92%tceles82%=85_noitseuq&92%tceles82%=85_CG&92%tceles82%=74_noitseuq&92%tceles82%=74_CG&92%tceles82%=64_noitseuq&92%tceles82%=64_CG&92%tceles82%=11_noitseuq&92%tceles82%=11_CG&92%tceles82%=28_noitseuq&92%tceles82%=01_noitseuq&92%tceles82%=9_noitseuq&92%tceles82%=8_noitseuq&92%tceles82%=7_noitseuq&=75_noitseuq&92%tceles82%=5_noitseuq&92%tceles82%=4_noitseuq&=3_noitseuq&=2_noitseuq&=48_noitseuq&=07_noitseuq&=96_noitseuq&92%tceles82%=1_noitseuq&0=sgnitaRodr&4=yBredrOodr&=oTegAtni&=morFegAtni&=emanresUleSrts&X=ecniSnigoLtsaLobc&1=hcraeSyeKodr&=sdrowyeKrts&0=DIPAobc&0=DICSobc&1=edulcnIytilanoitaNodr&0=DIytilanoitaNobc&=nwoTrts&0=DIytnuoCobc&}di.noiger{$=DInoigeRobc&851=DIyrtnuoCobc&NO=yadoTelbaliavAxbc&NO=trocsEsIleSxbc&2=DIredneGxbc&}di.noiger{$=oNegaPobc&E3%=txeNntb
 feeds.directory=.././app-data/feeds
 feeds.feedback.directory=.././app-data/feeds-feedback-phoenix
+feeds.feedback.v2.directory=.././app-data/feeds-feedbackv2-phoenix
+feeds.service.reports.v2.directory=.././app-data/feeds-servicereportsv2-phoenix
 feeds.feedback.epg.directory=.././app-data/feeds-feedback-epg
 temp.directory=.././app-data/temp
 image.directory=.././app-data/images
@@ -12,3 +16,5 @@ ukp.user.profile.url=https://{ukp.domain.name}/index.php?action=serviceprovider;
 static.directory=.././app-data/static
 reports.directory=.././app-data/reports
 ingestion.service.endpoint=http://localhost:8000
+api.headers.json.file.path=.././properties/api.headers.json
+api.cred=908abffe4ad0917b735432b5ce14ab64
