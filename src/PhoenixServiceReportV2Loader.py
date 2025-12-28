@@ -209,11 +209,11 @@ class PhoenixServiceReportV2Loader:
         if number_of_reports == 0:
             print("[WARN] No reports exist for this user [" + str(user_id) + "].")
         elif number_of_reports > 0 and number_of_pages == 1:
-            print("Loading service report for user : [" + str(user_id) + "], Reports : " + str(number_of_reports) + ", Pages : [" + str(number_of_pages) + "]")
+            print("[INFO] Loading service report for user: [" + str(user_id) + "], Reports : " + str(number_of_reports) + ", Pages:[" + str(number_of_pages) + "], Page 1")
             records = self.parse_data(data)
             self.generate_feed_file(records, user_id, 1, isGlobal)
         elif number_of_reports > 0 and number_of_pages > 1:
-            print("Loading service report for user : [" + str(user_id) + "], Number of reports : " + str(number_of_reports) + ", Number of pages : [" + str(number_of_pages) + "]")
+            print("[INFO] Loading service report for user: [" + str(user_id) + "], Reports: " + str(number_of_reports) + ", Pages : [" + str(number_of_pages) + "], Page 1")
             # get the first page, which is already loaded in memory
             records = self.parse_data(data)
             self.generate_feed_file(records, user_id, 1, isGlobal)
@@ -222,6 +222,9 @@ class PhoenixServiceReportV2Loader:
                 # setup the request
                 response = self.connect(user_id, i)
                 if response.status_code == 200 or response.status_code == 201:
+                    print("[INFO] Loading service report for user: [" + str(user_id) + "], Reports: " + str(
+                        number_of_reports) + ", Pages : [" + str(number_of_pages) + "], Page " +str(i))
+
                     response_payload = response.json()
                     records = self.parse_data(response_payload)
                     self.generate_feed_file(records, user_id, i, isGlobal)
@@ -289,7 +292,7 @@ class PhoenixServiceReportV2Loader:
                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
                    "x-typesense-api-key": "<KEY>"}
 
-        return requests.post("<VENDOR_URL>/multi_search", headers=headers, json=payload)
+        return requests.post("https://<VENDOR_URL>/multi_search", headers=headers, json=payload)
 
 
 if __name__ == "__main__":
