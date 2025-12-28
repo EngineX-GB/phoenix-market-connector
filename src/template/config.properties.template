@@ -12,3 +12,5 @@ ukp.user.profile.url=https://{ukp.domain.name}/index.php?action=serviceprovider;
 static.directory=.././app-data/static
 reports.directory=.././app-data/reports
 ingestion.service.endpoint=http://localhost:8000
+api.headers.json.file.path=.././properties/api.headers.json
+api.cred=908abffe4ad0917b735432b5ce14ab64

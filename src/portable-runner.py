@@ -20,13 +20,16 @@ def check_and_setup_default_properties():
         print("[WARN] Required config files do not exist. Preparing setup to create default ones....")
         provider_domain_name = input("Enter the provider domain name: ")
         content_domain_name = input("Enter the content domain name: ")
+        api_provider_domain_name = input("Enter the API provider domain name: ")
         ukp_domain_name = input("Enter the UKP domain name: ")
         domain_properties_map = {"provider_domain_name": provider_domain_name,
-                                 "content_domain_name": content_domain_name, "ukp_domain_name": ukp_domain_name}
+                                 "content_domain_name": content_domain_name,
+                                 "ukp_domain_name": ukp_domain_name,
+                                 "api_provider_domain_name": api_provider_domain_name}
 
         create_default_properties(".././properties/config.properties", "template/config.properties.template", domain_properties_map)
         create_default_properties(".././properties/headers.json", "template/headers.json.template", domain_properties_map)
-
+        create_default_properties(".././properties/api.headers.json", "template/api.headers.json.template", domain_properties_map)
 
 def create_default_properties(config_file_path: str, template_file_path: str, domain_properties_map):
     if not os.path.exists(config_file_path):
@@ -41,12 +44,18 @@ def create_default_properties(config_file_path: str, template_file_path: str, do
                 line = line.replace("{provider.domain.name}", domain_properties_map["provider_domain_name"])
             if "{content2.domain.name}" in line:
                 line = line.replace("{content2.domain.name}", domain_properties_map["content_domain_name"])
+            if "{api.provider.domain.name}" in line:
+                line = line.replace("{api.provider.domain.name}", domain_properties_map["api_provider_domain_name"])
             if "{ukp.domain.name}" in line:
                 line = line.replace("{ukp.domain.name}", domain_properties_map["ukp_domain_name"])
             if line.startswith("request.payload="):
                 line = line.replace("request.payload=", "").strip()
                 r_line = line[::-1]
                 line = "request.payload=" + str(r_line) + "\n"
+            if line.startswith("api.cred="):
+                line = line.replace("api.cred=", "").strip()
+                r_line = line[::-1]
+                line = "api.cred=" + str(r_line) + "\n"
             if line.startswith("request.payload.next="):
                 line = line.replace("request.payload.next=", "").strip()
                 r_line = line[::-1]

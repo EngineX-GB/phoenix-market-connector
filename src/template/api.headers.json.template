@@ -1,0 +1,20 @@
+{
+    "authority": "{api.provider.domain.name}",
+    "method": "GET",
+    "path": "/api/Ratings/Paginated?userId=8710426&pageNumber=%201&pageSize=50&v=2",
+    "scheme": "https",
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "Accept-Encoding": "gzip, deflate, br, zstd",
+    "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
+    "Priority": "u=0, i",
+    "sec-ch-ua": "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "Windows",
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "none",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+    "cookie": "0lZxWyh1EI8fsG tB0pXpl.VsotNtSJFyFxrD QkCWxLFti2ZtNzshrBEm1xm1z2Edn1uLyLE6NIxREUrlksMCpd_qlWk8igpU1xQ.8CkA-A1.1.0.1-661052562671-80U8ba wFQH3QUXvPMo1rCopeqBUQCGqzvMNwl_6Flj=mb_fc__}D50AA1BDF2C3-CD2B-0E4A-2C242-CCB94F86{=DIS ;}D50AA1BDF2C3-CD2B-0E4A-2C242-CCB94F86{=CASFM ;}D50AA1BDF2C3-CD2B-0E4A-2C242-CCB94F86{=646881 ;4508 3856 671.4299053551.2AG=ag_ ;0h$0l$j75$g1$o7$7557426621s.2SG=7ZY91P7Y_Pag_ ;02:91:61+5202/21/02=emiT&9715865023=DItiH&0=tesffOTMG&851=DIyrtnuoC=egaPyrtEnaiVemaC ;5202 ceD 02=etaDecnatpeccAetis ;86OxfXOwXpOj2pgF__BJvsHscHYu h uMy0GskRkZT07FQ LRSnXc16vX5E84.3eaaaitw vDbLbXLvWRA39iWSUy.oqa3S cSRkcZIhF uO NL1Wt2ddjPTVj8L6diVtUW L.ybuNgPLR.B_0.xqxVZEpYnr4ijH2B uqPSjv7mkbwJpuH K65y_hkYkcRr24vVKsg.e9b_PEUG10ng2htP9jpx6tRAtm tQw8NTVfq.w_c.e9DF7p8q cW7-1.1.2.1-855742662671-w3ZxJJnca de_F_AkDVW Pm6Zu2Ge cdVQ1JtYGuc_0g=ecnaraelc_fc ;ggXjQ33aoW6Qys5cza h mUGXco5nW4VQXjByboTd40=blfc__ ;7796816671.0006477891.2AG=dig_ ;1=stisiVetis ;851=C ;}eurt:22%22rpdg_delbane%22C,%2244%22:edoc_yrtnuoc%22C,%220059231551871%22:ta_seripxe%22C,%8255308385671%22:ta_ detpecca%22C,]gnitegrat%22,%22scitylana%22,%22lanoitcnuf%22[B:detpecca%22C,%220059231551871%22:yripxe%22B%7D=tnecsnoc_rpdg ;0=DIlarrefeR ;1=WRDIlarrefeR"
+}
