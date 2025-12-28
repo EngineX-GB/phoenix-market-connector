@@ -1,6 +1,5 @@
 import datetime
 import os
-import sys
 import time
 
 import requests
@@ -46,7 +45,7 @@ class PhoenixServiceReportV2Loader(PhoenixAbstractV2DataLoader):
         data = response.json()
         # number of reports:
         number_of_reports = data["results"][0]["found"]
-        number_of_pages = loader.determine_number_of_pages(number_of_reports)
+        number_of_pages = self.determine_number_of_pages(number_of_reports)
 
         if number_of_reports == 0:
             print("[WARN] No reports exist for this user [" + str(user_id) + "].")
@@ -136,60 +135,63 @@ class PhoenixServiceReportV2Loader(PhoenixAbstractV2DataLoader):
 
         return requests.post("<VENDOR_URL>/multi_search", headers=headers, json=payload)
 
+    def execute(self, args: list[str]):
+        isGlobal = False
 
-if __name__ == "__main__":
+        if len(args) == 1 and args[0] == "--stats":
+            print("[INFO] Download service report statistics")
 
-    isGlobal = False
+            userids_in_global_list = self.get_number_of_records(".././app-data/static/global-userid-list.txt")
+            userids_with_downloaded_reports = self.get_number_of_records(
+                ".././app-data/temp/temp_servicereports-v2_global.txt")
 
+            print("[INFO] Number of user ids in global list: " + str(userids_in_global_list))
+            print("[INFO] Number of users with reports downloaded: " + str(userids_with_downloaded_reports))
+            print("[INFO] Remaining users to download reports for: " + str(
+                userids_in_global_list - userids_with_downloaded_reports))
+            exit(0)
+
+        elif len(args) == 1 and args[0] == "--global":
+            # run the global logic
+            isGlobal = True
+            if not os.path.exists(".././app-data/static/global-userid-list.txt"):
+                print("[ERROR] global-userid-list.txt cannot be found in static directory. Exiting.")
+                exit(1)
+        elif len(args) > 1 and args[0] == "--userId":
+            user_id = args[1]
+            feedback_user_ids = user_ids = [line.rstrip("\n") for line in
+                                            self.read_user_ids_from_temp_feedback_file("servicereports", False)]
+            if user_id not in feedback_user_ids:
+                self.parse_feed(int(user_id), False)
+            else:
+                print("[INFO] Service report for user : " + user_id + " is already downloaded. Ignoring...")
+            exit(0)
+
+        user_id_list = []
+        if not isGlobal:
+            feedback_user_ids = user_ids = [line.rstrip("\n") for line in
+                                            self.read_user_ids_from_temp_feedback_file("servicereports", False)]
+
+            # check if the ratings for the user have already been downloaded.
+            # if so, then ignore this user and move onto the next
+
+            user_list_urls = self.read_profile_urls_from_userlist_temp_file()
+
+            for url in user_list_urls:
+                userId = self.extractUserId(url)
+                user_id_list.append(userId)
+
+        else:
+            feedback_user_ids = user_ids = [line.rstrip("\n") for line in
+                                            self.read_user_ids_from_temp_feedback_file("servicereports", True)]
+            user_id_list = [line.rstrip("\n") for line in self.read_global_userid_list()]
+
+        for user_id in user_id_list:
+            if user_id in feedback_user_ids:
+                print("[INFO] Service report for user : " + user_id + " is already downloaded. Ignoring...")
+            else:
+                self.parse_feed(int(user_id), isGlobal)
+
+if __name__== "__main__":
     loader = PhoenixServiceReportV2Loader()
-
-    res = sys.argv
-
-    if len(sys.argv) > 1 and sys.argv[1] == "--stats":
-        print("[INFO] Download service report statistics")
-
-        userids_in_global_list = loader.get_number_of_records(".././app-data/static/global-userid-list.txt")
-        userids_with_downloaded_reports = loader.get_number_of_records(".././app-data/temp/temp_servicereports-v2_global.txt")
-
-        print("[INFO] Number of user ids in global list: " + str(userids_in_global_list))
-        print("[INFO] Number of users with feedback downloaded: " + str(userids_with_downloaded_reports))
-        print("[INFO] Remaining users to download feedback for: " + str(userids_in_global_list - userids_with_downloaded_reports))
-        exit(0)
-
-    elif len(sys.argv) > 1 and sys.argv[1] == "--global":
-        # run the global logic
-        isGlobal = True
-        if not os.path.exists(".././app-data/static/global-userid-list.txt"):
-            print("[ERROR] global-userid-list.txt cannot be found in static directory. Exiting.")
-            exit(1)
-    elif len(sys.argv) > 1 and sys.argv[1] == "--userId":
-        user_id = sys.argv[2]
-        feedback_user_ids = user_ids = [line.rstrip("\n") for line in loader.read_user_ids_from_temp_feedback_file("servicereports", False)]
-        if user_id not in feedback_user_ids:
-            loader.parse_feed(int(user_id), False)
-        else:
-            print("[INFO] Service report for user : " + user_id + " is already downloaded. Ignoring...")
-        exit(0)
-
-    user_id_list = []
-    if not isGlobal:
-        feedback_user_ids = user_ids = [line.rstrip("\n") for line in loader.read_user_ids_from_temp_feedback_file("servicereports", False)]
-
-        # check if the ratings for the user have already been downloaded.
-        # if so, then ignore this user and move onto the next
-
-        user_list_urls = loader.read_profile_urls_from_userlist_temp_file()
-
-        for url in user_list_urls:
-            userId = loader.extractUserId(url)
-            user_id_list.append(userId)
-
-    else:
-        feedback_user_ids = user_ids = [line.rstrip("\n") for line in loader.read_user_ids_from_temp_feedback_file("servicereports", True)]
-        user_id_list = [line.rstrip("\n") for line in loader.read_global_userid_list()]
-
-    for user_id in user_id_list:
-        if user_id in feedback_user_ids:
-            print("[INFO] Service report for user : " + user_id + " is already downloaded. Ignoring...")
-        else:
-            loader.parse_feed(int(user_id), isGlobal)
+    loader.execute([])

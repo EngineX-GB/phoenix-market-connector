@@ -1,7 +1,6 @@
 import datetime
 import json
 import os
-import sys
 import time
 import requests
 
@@ -67,7 +66,8 @@ class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
 
         if not os.path.exists(feeds_directory):
             os.makedirs(feeds_directory)
-        feed_file_path = feeds_directory + "/" + "feeds-feedbackv2-phoenix_" + user_id + "_" + datetime.datetime.now().strftime("%Y-%m-%d") + "_" + str(page_number_ref) + ".txt"
+        feed_file_path = feeds_directory + "/" + "feeds-feedbackv2-phoenix_" + user_id + "_" + datetime.datetime.now().strftime(
+            "%Y-%m-%d") + "_" + str(page_number_ref) + ".txt"
         self.generate_feed_file(feedback_collection, feed_file_path)
 
     def generate_feed_file(self, records, feed_file_path):
@@ -105,7 +105,8 @@ class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
             elif pageMetadata.total_pages > 1:
                 # then get the current page, and the loop for the others
                 self.load_data(responseJson, user_id, 1, isGlobal)
-                for i in range(2, self.handlePageLimit(pageMetadata.total_pages) + 1):  # have to add a + 1 to get the last page
+                for i in range(2, self.handlePageLimit(
+                        pageMetadata.total_pages) + 1):  # have to add a + 1 to get the last page
                     time.sleep(5)
                     feed_json = self.get_json_data(user_id, i)
                     self.load_data(feed_json, user_id, i, isGlobal)
@@ -115,47 +116,55 @@ class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
 
             self.update_temp_file(user_id, isGlobal, "feedback")
 
+    def execute(self, args: list[str]):
+        isGlobal = False
+
+        if len(args) == 1 and args[0] == "--stats":
+            print("[INFO] Download feedback statistics")
+
+            userids_in_global_list = self.get_number_of_records(".././app-data/static/global-userid-list.txt")
+            userids_with_downloaded_feedback = self.get_number_of_records(
+                ".././app-data/temp/temp_feedback-v2_global.txt")
+
+            print("[INFO] Number of user ids in global list: " + str(userids_in_global_list))
+            print("[INFO] Number of users with feedback downloaded: " + str(userids_with_downloaded_feedback))
+            print("[INFO] Remaining users to download feedback for: " + str(
+                userids_in_global_list - userids_with_downloaded_feedback))
+
+            exit(0)
+
+        if len(args) == 1 and args[0] == "--global":
+            isGlobal = True
+            if not os.path.exists(".././app-data/static/global-userid-list.txt"):
+                print("[ERROR] global-userid-list.txt cannot be found in static directory. Exiting.")
+                exit(1)
+
+        user_id_list = []
+        if not isGlobal:
+            feedback_user_ids = user_ids = [line.rstrip("\n") for line in
+                                            self.read_user_ids_from_temp_feedback_file("feedback", False)]
+
+            # check if the ratings for the user have already been downloaded.
+            # if so, then ignore this user and move onto the next
+
+            user_list_urls = self.read_profile_urls_from_userlist_temp_file()
+
+            for url in user_list_urls:
+                userId = self.extractUserId(url)
+                user_id_list.append(userId)
+
+        else:
+            feedback_user_ids = user_ids = [line.rstrip("\n") for line in
+                                            self.read_user_ids_from_temp_feedback_file("feedback", True)]
+            user_id_list = [line.rstrip("\n") for line in self.read_global_userid_list()]
+
+        for user_id in user_id_list:
+            if user_id in feedback_user_ids:
+                print("[INFO] Feedback data for user : " + user_id + " is already downloaded. Ignoring...")
+            else:
+                self.load(user_id, isGlobal)
+
+
 if __name__ == "__main__":
     loader = PhoenixFeedbackV2Loader()
-    isGlobal = False
-
-    if len(sys.argv) > 1 and sys.argv[1] == "--stats":
-        print("[INFO] Download feedback statistics")
-
-        userids_in_global_list = loader.get_number_of_records(".././app-data/static/global-userid-list.txt")
-        userids_with_downloaded_feedback = loader.get_number_of_records(".././app-data/temp/temp_feedback-v2_global.txt")
-
-        print("[INFO] Number of user ids in global list: " + str(userids_in_global_list))
-        print("[INFO] Number of users with feedback downloaded: " + str(userids_with_downloaded_feedback))
-        print("[INFO] Remaining users to download feedback for: " + str(userids_in_global_list - userids_with_downloaded_feedback))
-
-        exit(0)
-
-    if len(sys.argv) > 1 and sys.argv[1] == "--global":
-        isGlobal = True
-        if not os.path.exists(".././app-data/static/global-userid-list.txt"):
-            print("[ERROR] global-userid-list.txt cannot be found in static directory. Exiting.")
-            exit(1)
-
-    user_id_list = []
-    if not isGlobal:
-        feedback_user_ids = user_ids = [line.rstrip("\n") for line in loader.read_user_ids_from_temp_feedback_file("feedback", False)]
-
-        # check if the ratings for the user have already been downloaded.
-        # if so, then ignore this user and move onto the next
-
-        user_list_urls = loader.read_profile_urls_from_userlist_temp_file()
-
-        for url in user_list_urls:
-            userId = loader.extractUserId(url)
-            user_id_list.append(userId)
-
-    else:
-        feedback_user_ids = user_ids = [line.rstrip("\n") for line in loader.read_user_ids_from_temp_feedback_file("feedback", True)]
-        user_id_list = [line.rstrip("\n") for line in loader.read_global_userid_list()]
-
-    for user_id in user_id_list:
-        if user_id in feedback_user_ids:
-            print("[INFO] Feedback data for user : " + user_id + " is already downloaded. Ignoring...")
-        else:
-            loader.load(user_id, isGlobal)
+    loader.execute([])
