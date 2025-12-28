@@ -2,6 +2,7 @@ class PropertyManager:
 
     def __init__(self, propertyFileReader):
         self.providerUrl = propertyFileReader.get("provider.url")
+        self.apiProviderUrl = propertyFileReader.get("api.provider.url")
         self.requestPayload = propertyFileReader.get("request.payload")
         self.requestPayloadNext = propertyFileReader.get("request.payload.next")
         self.feedsDirectory = propertyFileReader.get("feeds.directory")
@@ -15,6 +16,7 @@ class PropertyManager:
         self.feedsFeedbackDirectory = propertyFileReader.get("feeds.feedback.directory")
         self.feedsFeedbackEpgDirectory = propertyFileReader.get("feeds.feedback.epg.directory")
         self.ingestionServiceEndpoint = propertyFileReader.get("ingestion.service.endpoint")
+        self.apiCred = propertyFileReader.get("api.cred")
 
     def getProviderUrl(self):
         return self.providerUrl
@@ -57,3 +59,9 @@ class PropertyManager:
 
     def getIngestionServiceEndpoint(self):
         return self.ingestionServiceEndpoint
+
+    def getApiProviderUrl(self):
+        return self.apiProviderUrl
+
+    def getApiCred(self):
+        return self.apiCred
