@@ -77,7 +77,8 @@ class HtmlGenerator:
             # a row split, the number of fields will be 1 (i.e. only showing "None"). If a split of a line has multiple
             # fields then it is an actual genuine record of data.
             if len(fields) > 1:
-                if fields[16] != "-" and fields[21] == "London" and fields[4] != "Not Specified":
+                if (fields[16] != "-" and fields[21] == "London" and fields[4] != "Not Specified"
+                        and fields[1] == "British"):
                     userNameField = fields[0]
                     userId = fields[19]
                     if self.checkIfUserHasDownloadedImage(userId):
@@ -107,7 +108,7 @@ class HtmlGenerator:
             fields = l.split("|")
             # fetch data based on positions
             if len(fields) > 1:
-                if fields[16] != "-" and fields[21] == "London" and fields[4] != "Not Specified":
+                if (fields[16] != "-" and fields[21] == "London" and fields[4] != "Not Specified"):    # todo: Parameterise the nationality
                     if len(fields[2]) > 22:
                         fields[2] = (fields[2])[:22] + "..."
                     if fields[17] in watchListRecords:

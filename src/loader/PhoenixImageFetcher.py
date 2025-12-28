@@ -160,7 +160,9 @@ class PhoenixImageFetcher:
                     urllib.request.urlretrieve(self.propertyManager.getImageDomainUrl() + "/ci/f/" + user_id + "_" + str(i) + ".jpg",
                                                user_directory + "/" + new_file_name)
         else:
-            print("[INFO] Folder " + user_directory + " does not exist. Run command to download new image data.")
+            print("[INFO] Folder " + user_directory + " does not exist. Downloading media data for the first time.")
+            useridlist = [user_id]
+            self.download_user_image(user_id, 1, len(useridlist))
 
     # reads the temp file to get the list of downloaded user data so far
     def get_user_ids(self, dateString):
