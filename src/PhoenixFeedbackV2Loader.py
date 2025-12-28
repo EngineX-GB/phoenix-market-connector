@@ -7,6 +7,7 @@ import requests
 from model.FeedbackV2 import FeedbackV2
 from model.PageData import PageData
 from PhoenixAbstractV2DataLoader import PhoenixAbstractV2DataLoader
+from model import PropertyManager
 
 """
 You can run this in 2 modes:
@@ -29,8 +30,9 @@ Ensure:
 
 class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
 
-    def __init__(self):
+    def __init__(self, propertyManager: PropertyManager):
         super().__init__()
+        self.propertyManager = propertyManager
 
     def get_pagedata_for_feedback_loading(self, data) -> PageData:
 
@@ -60,9 +62,9 @@ class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
 
         # here, try and write to persistence/ storage
         if isGlobal:
-            feeds_directory = ".././app-data/feeds-feedbackv2-phoenix/global"
+            feeds_directory = self.propertyManager.getFeedsFeedbackV2Directory() + "/global"
         else:
-            feeds_directory = ".././app-data/feeds-feedbackv2-phoenix/" + datetime.datetime.now().strftime("%Y-%m-%d")
+            feeds_directory = self.propertyManager.getFeedsFeedbackV2Directory() + "/" + datetime.datetime.now().strftime("%Y-%m-%d")
 
         if not os.path.exists(feeds_directory):
             os.makedirs(feeds_directory)
@@ -77,9 +79,9 @@ class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
         f.close()
 
     def get_json_data(self, user_id, page_number):
-        url = "https://<VENDOR_URL>/api/Ratings/Paginated?userId=" + user_id + "&pageNumber= " + str(
+        url = self.propertyManager.getApiProviderUrl() + "/api/Ratings/Paginated?userId=" + user_id + "&pageNumber= " + str(
             page_number) + "&pageSize=50&v=2"
-        with open(".././properties/api.headers.json") as api_headers:
+        with open(self.propertyManager.getApiHeadersJsonPath()) as api_headers:
             headers = json.load(api_headers)
         response = requests.get(url, headers=headers)
         if response.status_code != 200:
@@ -122,9 +124,9 @@ class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
         if len(args) == 1 and args[0] == "--stats":
             print("[INFO] Download feedback statistics")
 
-            userids_in_global_list = self.get_number_of_records(".././app-data/static/global-userid-list.txt")
+            userids_in_global_list = self.get_number_of_records(self.propertyManager.getStaticDirectory() + "/global-userid-list.txt")
             userids_with_downloaded_feedback = self.get_number_of_records(
-                ".././app-data/temp/temp_feedback-v2_global.txt")
+                self.propertyManager.getTempDirectory() + "/temp_feedback-v2_global.txt")
 
             print("[INFO] Number of user ids in global list: " + str(userids_in_global_list))
             print("[INFO] Number of users with feedback downloaded: " + str(userids_with_downloaded_feedback))
@@ -135,7 +137,7 @@ class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
 
         if len(args) == 1 and args[0] == "--global":
             isGlobal = True
-            if not os.path.exists(".././app-data/static/global-userid-list.txt"):
+            if not os.path.exists(self.propertyManager.getStaticDirectory() + "/global-userid-list.txt"):
                 print("[ERROR] global-userid-list.txt cannot be found in static directory. Exiting.")
                 exit(1)
 
@@ -164,7 +166,7 @@ class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
             else:
                 self.load(user_id, isGlobal)
 
-
-if __name__ == "__main__":
-    loader = PhoenixFeedbackV2Loader()
-    loader.execute([])
+#
+# if __name__ == "__main__":
+#     loader = PhoenixFeedbackV2Loader()
+#     loader.execute([])

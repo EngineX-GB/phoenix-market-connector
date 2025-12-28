@@ -6,15 +6,17 @@ import requests
 
 from model.ServiceReportFeed import ServiceReportFeed
 from PhoenixAbstractV2DataLoader import PhoenixAbstractV2DataLoader
+from model import PropertyManager
 
 
 class PhoenixServiceReportV2Loader(PhoenixAbstractV2DataLoader):
 
-    def __init__(self):
+    def __init__(self, propertyManager: PropertyManager):
         # initialise directories
         super().__init__()
-        self.reports_feed_directory = ".././app-data/feeds-servicereportsv2-phoenix"
-        self.global_reports_feed_directory = ".././app-data/feeds-servicereportsv2-phoenix/global"
+        self.propertyManager = propertyManager
+        self.reports_feed_directory = self.propertyManager.getFeedsServiceReportsV2Directory()
+        self.global_reports_feed_directory = self.propertyManager.getFeedsServiceReportsV2Directory() + "/global"
         if not os.path.exists(self.reports_feed_directory):
             os.makedirs(self.reports_feed_directory, exist_ok=True)
         if not os.path.exists(self.global_reports_feed_directory):
@@ -131,9 +133,9 @@ class PhoenixServiceReportV2Loader(PhoenixAbstractV2DataLoader):
 
         headers = {"Content-Type": "application/json",
                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
-                   "x-typesense-api-key": "KEY"}
+                   "x-typesense-api-key": self.propertyManager.getApiCred()}
 
-        return requests.post("<VENDOR_URL>/multi_search", headers=headers, json=payload)
+        return requests.post(self.propertyManager.getTsApiProviderUrl() + "/multi_search", headers=headers, json=payload)
 
     def execute(self, args: list[str]):
         isGlobal = False
@@ -141,9 +143,9 @@ class PhoenixServiceReportV2Loader(PhoenixAbstractV2DataLoader):
         if len(args) == 1 and args[0] == "--stats":
             print("[INFO] Download service report statistics")
 
-            userids_in_global_list = self.get_number_of_records(".././app-data/static/global-userid-list.txt")
+            userids_in_global_list = self.get_number_of_records(self.propertyManager.getStaticDirectory() + "/global-userid-list.txt")
             userids_with_downloaded_reports = self.get_number_of_records(
-                ".././app-data/temp/temp_servicereports-v2_global.txt")
+                self.propertyManager.getTempDirectory() + "/temp_servicereports-v2_global.txt")
 
             print("[INFO] Number of user ids in global list: " + str(userids_in_global_list))
             print("[INFO] Number of users with reports downloaded: " + str(userids_with_downloaded_reports))
@@ -154,7 +156,7 @@ class PhoenixServiceReportV2Loader(PhoenixAbstractV2DataLoader):
         elif len(args) == 1 and args[0] == "--global":
             # run the global logic
             isGlobal = True
-            if not os.path.exists(".././app-data/static/global-userid-list.txt"):
+            if not os.path.exists(self.propertyManager.getStaticDirectory() + "/global-userid-list.txt"):
                 print("[ERROR] global-userid-list.txt cannot be found in static directory. Exiting.")
                 exit(1)
         elif len(args) > 1 and args[0] == "--userId":
@@ -192,6 +194,6 @@ class PhoenixServiceReportV2Loader(PhoenixAbstractV2DataLoader):
             else:
                 self.parse_feed(int(user_id), isGlobal)
 
-if __name__== "__main__":
-    loader = PhoenixServiceReportV2Loader()
-    loader.execute([])
+# if __name__== "__main__":
+#     loader = PhoenixServiceReportV2Loader()
+#     loader.execute([])

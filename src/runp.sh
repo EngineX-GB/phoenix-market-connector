@@ -244,6 +244,18 @@ elif [ $1 = '--get-british-list' ]
 	then python portable-util.py "get-british-list"
 elif [ $1 = '--get-ratings' ]
 	then python portable-runner.py get-ratings
-elif [ $1 = '--sp-update']
+elif [ $1 = '--sp-update' ]
   then python portable-runner.py sp-update $2
+elif [ $1 = '--servicereports' ] && [ $2 = '--global' ]
+  then python portable-runner.py "servicereports" $2
+elif [ $1 = '--servicereports' ] && [ $2 = '--stats' ]
+  then python portable-runner.py "servicereports" $2
+elif [ $1 = '--servicereports' ] && [ $2 = '--standard' ]
+  then python portable-runner.py "servicereports"
+elif [ $1 = '--feedback-v2' ] && [ $2 = '--global' ]
+  then python portable-runner.py "feedbackv2" $2
+elif [ $1 = '--feedback-v2' ] && [ $2 = '--stats' ]
+  then python portable-runner.py "feedbackv2" $2
+elif [ $1 = '--feedback-v2' ] && [ $2 = '--standard' ]
+  then python portable-runner.py "feedbackv2"
 fi

@@ -8,6 +8,8 @@ from loader.PhoenixFeedbackFetcher import PhoenixFeedbackFetcher
 from loader.PhoenixImageFetcher import PhoenixImageFetcher
 from portable.WatchListManager import WatchListManager
 from PathController import PathController
+from PhoenixServiceReportV2Loader import PhoenixServiceReportV2Loader
+from PhoenixFeedbackV2Loader import PhoenixFeedbackV2Loader
 from util.PhoenixUtil import PhoenixUtil
 from util.PropertyFileReader import PropertyFileReader
 from model.PropertyManager import PropertyManager
@@ -21,11 +23,13 @@ def check_and_setup_default_properties():
         provider_domain_name = input("Enter the provider domain name: ")
         content_domain_name = input("Enter the content domain name: ")
         api_provider_domain_name = input("Enter the API provider domain name: ")
+        ts_api_provider_domain_name = input("Enter the TS-API provider domain name: ")
         ukp_domain_name = input("Enter the UKP domain name: ")
         domain_properties_map = {"provider_domain_name": provider_domain_name,
                                  "content_domain_name": content_domain_name,
                                  "ukp_domain_name": ukp_domain_name,
-                                 "api_provider_domain_name": api_provider_domain_name}
+                                 "api_provider_domain_name": api_provider_domain_name,
+                                 "ts_api_provider_domain_name" : ts_api_provider_domain_name}
 
         create_default_properties(".././properties/config.properties", "template/config.properties.template", domain_properties_map)
         create_default_properties(".././properties/headers.json", "template/headers.json.template", domain_properties_map)
@@ -46,6 +50,8 @@ def create_default_properties(config_file_path: str, template_file_path: str, do
                 line = line.replace("{content2.domain.name}", domain_properties_map["content_domain_name"])
             if "{api.provider.domain.name}" in line:
                 line = line.replace("{api.provider.domain.name}", domain_properties_map["api_provider_domain_name"])
+            if "{ts.api.provider.domain.name}" in line:
+                line = line.replace("{ts.api.provider.domain.name}", domain_properties_map["ts_api_provider_domain_name"])
             if "{ukp.domain.name}" in line:
                 line = line.replace("{ukp.domain.name}", domain_properties_map["ukp_domain_name"])
             if line.startswith("request.payload="):
@@ -150,6 +156,12 @@ try:
         elif sys.argv[1] == "get-ratings":
             epgMobileConnector = EpgMobileConnector(propertyManager)
             epgMobileConnector.main()
+        elif sys.argv[1] == "servicereports":
+            serviceReportLoader = PhoenixServiceReportV2Loader(propertyManager)
+            serviceReportLoader.execute([sys.argv[2]])
+        elif sys.argv[1] == "feedbackv2":
+            feedbackV2Loader = PhoenixFeedbackV2Loader(propertyManager)
+            feedbackV2Loader.execute([sys.argv[2]])
         elif sys.argv[1] == "feedback":
             feedbackFetcher = PhoenixFeedbackFetcher(propertyManager)
             argList = [sys.argv[1]]
