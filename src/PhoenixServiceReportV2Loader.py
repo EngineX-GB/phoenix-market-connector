@@ -60,20 +60,23 @@ class PhoenixServiceReportV2Loader(PhoenixAbstractV2DataLoader):
             # get the first page, which is already loaded in memory
             records = self.parse_data(data)
             self.generate_feed_file(records, user_id, 1, isGlobal)
-            # now loop through the remaining pages
-            for i in range(2, number_of_pages + 1):
-                # setup the request
-                response = self.connect(user_id, i)
-                if response.status_code == 200 or response.status_code == 201:
-                    print("[INFO] Loading service report for user: [" + str(user_id) + "], Reports: " + str(
-                        number_of_reports) + ", Pages : [" + str(number_of_pages) + "], Page " +str(i))
 
-                    response_payload = response.json()
-                    records = self.parse_data(response_payload)
-                    self.generate_feed_file(records, user_id, i, isGlobal)
-                    time.sleep(5)
-                else:
-                    print("[ERROR] Error in reading feed : " + str(response.status_code))
+            # now loop through the remaining pages (only if isGlobal is true)
+            # otherwise if isGlobal is false (i.e. it's a standard daily feed) then get the one page only.
+            if isGlobal:
+                for i in range(2, number_of_pages + 1):
+                    # setup the request
+                    response = self.connect(user_id, i)
+                    if response.status_code == 200 or response.status_code == 201:
+                        print("[INFO] Loading service report for user: [" + str(user_id) + "], Reports: " + str(
+                            number_of_reports) + ", Pages : [" + str(number_of_pages) + "], Page " +str(i))
+
+                        response_payload = response.json()
+                        records = self.parse_data(response_payload)
+                        self.generate_feed_file(records, user_id, i, isGlobal)
+                        time.sleep(5)
+                    else:
+                        print("[ERROR] Error in reading feed : " + str(response.status_code))
         else:
             print("[WARN] Unknown branch conditional")
         self.update_temp_file(user_id, isGlobal, "servicereports")
@@ -193,7 +196,3 @@ class PhoenixServiceReportV2Loader(PhoenixAbstractV2DataLoader):
                 print("[INFO] Service report for user : " + user_id + " is already downloaded. Ignoring...")
             else:
                 self.parse_feed(int(user_id), isGlobal)
-
-# if __name__== "__main__":
-#     loader = PhoenixServiceReportV2Loader()
-#     loader.execute([])
