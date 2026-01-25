@@ -251,11 +251,11 @@ elif [ $1 = '--servicereports' ] && [ $2 = '--global' ]
 elif [ $1 = '--servicereports' ] && [ $2 = '--stats' ]
   then python portable-runner.py "servicereports" $2
 elif [ $1 = '--servicereports' ] && [ $2 = '--standard' ]
-  then python portable-runner.py "servicereports"
+  then python portable-runner.py "servicereports" $2
 elif [ $1 = '--feedback-v2' ] && [ $2 = '--global' ]
   then python portable-runner.py "feedbackv2" $2
 elif [ $1 = '--feedback-v2' ] && [ $2 = '--stats' ]
   then python portable-runner.py "feedbackv2" $2
 elif [ $1 = '--feedback-v2' ] && [ $2 = '--standard' ]
-  then python portable-runner.py "feedbackv2"
+  then python portable-runner.py "feedbackv2" $2
 fi

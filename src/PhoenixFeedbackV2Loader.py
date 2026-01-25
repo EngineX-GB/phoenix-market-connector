@@ -107,11 +107,15 @@ class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
             elif pageMetadata.total_pages > 1:
                 # then get the current page, and the loop for the others
                 self.load_data(responseJson, user_id, 1, isGlobal)
-                for i in range(2, self.handlePageLimit(
-                        pageMetadata.total_pages) + 1):  # have to add a + 1 to get the last page
-                    time.sleep(5)
-                    feed_json = self.get_json_data(user_id, i)
-                    self.load_data(feed_json, user_id, i, isGlobal)
+
+                # 25-01-26: Only if 'isGlobal' is true, then get all the pages of JSON data for the user.
+                # otherwise if isGlobal is false (i.e. it's a standard daily feed, then just get the one page
+                if isGlobal:
+                    for i in range(2, self.handlePageLimit(
+                            pageMetadata.total_pages) + 1):  # have to add a + 1 to get the last page
+                        time.sleep(5)
+                        feed_json = self.get_json_data(user_id, i)
+                        self.load_data(feed_json, user_id, i, isGlobal)
             else:
                 print("[WARN] No data is available for user " + user_id)
                 time.sleep(5)
