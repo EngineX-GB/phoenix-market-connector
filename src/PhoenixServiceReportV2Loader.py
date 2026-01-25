@@ -74,13 +74,13 @@ class PhoenixServiceReportV2Loader(PhoenixAbstractV2DataLoader):
                         response_payload = response.json()
                         records = self.parse_data(response_payload)
                         self.generate_feed_file(records, user_id, i, isGlobal)
-                        time.sleep(5)
+                        time.sleep(1)
                     else:
                         print("[ERROR] Error in reading feed : " + str(response.status_code))
         else:
             print("[WARN] Unknown branch conditional")
         self.update_temp_file(user_id, isGlobal, "servicereports")
-        time.sleep(5)
+        time.sleep(1)
 
     def parse_data(self, data):
         records = []

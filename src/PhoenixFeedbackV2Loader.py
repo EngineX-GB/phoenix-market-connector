@@ -103,7 +103,7 @@ class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
             if pageMetadata.total_pages == 1:
                 # then get the current page of json
                 self.load_data(responseJson, user_id, 1, isGlobal)
-                time.sleep(5)
+                time.sleep(1)
             elif pageMetadata.total_pages > 1:
                 # then get the current page, and the loop for the others
                 self.load_data(responseJson, user_id, 1, isGlobal)
@@ -113,12 +113,12 @@ class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
                 if isGlobal:
                     for i in range(2, self.handlePageLimit(
                             pageMetadata.total_pages) + 1):  # have to add a + 1 to get the last page
-                        time.sleep(5)
+                        time.sleep(1)
                         feed_json = self.get_json_data(user_id, i)
                         self.load_data(feed_json, user_id, i, isGlobal)
             else:
                 print("[WARN] No data is available for user " + user_id)
-                time.sleep(5)
+                time.sleep(1)
 
             self.update_temp_file(user_id, isGlobal, "feedback")
 
