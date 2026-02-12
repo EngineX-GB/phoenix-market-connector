@@ -19,6 +19,24 @@ class Order:
         self.notes = notes
         self.DELIMITER = "|"
 
+    def get_order_ref(self):
+        return self.order_ref
+
+    def get_status(self):
+        return self.status
+
+    def get_user_id(self):
+        return self.user_id
+
+    def get_username(self):
+        return self.username
+
+    def get_date_of_event(self):
+        return self.date_of_event
+
+    def set_status(self, status):
+        self.status = status
+
     def generate_record(self):
         return (str(self.id) + self.DELIMITER
                 + self.order_ref + self.DELIMITER

@@ -180,7 +180,13 @@ try:
             imageFetcher.main(argList)
         elif sys.argv[1] == "raise-order":
             order_loader = PhoenixOrderLoader(propertyManager)
-            order_loader.execute(False)
+            order_loader.raise_order()
+        elif sys.argv[1] == "execute-orders":
+            order_loader = PhoenixOrderLoader(propertyManager)
+            order_loader.execute_order()
+        elif sys.argv[1] == "cancel-order":
+            order_loader = PhoenixOrderLoader(propertyManager)
+            order_loader.cancel_order()
         else:
             connector.start()
             print("[INFO] Connect to service provider and generate feed file")
