@@ -1,7 +1,5 @@
 from abc import ABC
 
-from src.model.PropertyManager import PropertyManager
-
 
 class PhoenixAbstractOrderLoader(ABC):
 

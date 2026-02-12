@@ -2,7 +2,7 @@ class Order:
 
     def __init__(self, id, order_ref, user_id, username, location, date_of_event,
                  time_of_event, duration, rate, deductions, surplus,
-                 price, status, notes):
+                 price, status, notes, timestamp):
         self.id = id
         self.order_ref = order_ref
         self.user_id = user_id
@@ -17,6 +17,7 @@ class Order:
         self.price = price
         self.status = status
         self.notes = notes
+        self.timestamp = timestamp
         self.DELIMITER = "|"
 
     def get_order_ref(self):
@@ -34,8 +35,17 @@ class Order:
     def get_date_of_event(self):
         return self.date_of_event
 
+    def set_id(self, id):
+        self.id = id
+
     def set_status(self, status):
         self.status = status
+
+    def set_notes(self, notes):
+        self.notes = notes
+
+    def set_timestamp(self, timestamp):
+        self.timestamp = timestamp
 
     def generate_record(self):
         return (str(self.id) + self.DELIMITER
@@ -51,5 +61,6 @@ class Order:
                 + self.surplus + self.DELIMITER
                 + str(self.price) + self.DELIMITER
                 + self.status + self.DELIMITER
-                + self.notes
+                + self.notes + self.DELIMITER
+                + self.timestamp
                 )

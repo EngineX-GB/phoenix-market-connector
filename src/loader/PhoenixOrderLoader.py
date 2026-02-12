@@ -7,7 +7,7 @@ from model.OrderClientDetail import OrderClientDetail
 from model.PropertyManager import PropertyManager
 from util.PhoenixUtil import PhoenixUtil
 
-from src.loader.PhoenixAbstractOrderLoader import PhoenixAbstractOrderLoader
+from loader.PhoenixAbstractOrderLoader import PhoenixAbstractOrderLoader
 
 
 class PhoenixOrderLoader(PhoenixAbstractOrderLoader):
@@ -83,18 +83,17 @@ class PhoenixOrderLoader(PhoenixAbstractOrderLoader):
             fields = l.split("|")
             if len(status_filter_list) == 0:
                 orders.append(Order(fields[0], fields[1], fields[2], fields[3], fields[4], fields[5],
-                                    fields[6], fields[7], fields[8], fields[9], fields[10],fields[11],
-                                    fields[12], fields[13]
+                                    fields[6], fields[7], fields[8], fields[9], fields[10], fields[11],
+                                    fields[12], fields[13], fields[14]
                                     ))
             else:
                 if fields[12] in status_filter_list:
                     orders.append(Order(fields[0], fields[1], fields[2], fields[3], fields[4], fields[5],
                                         fields[6], fields[7], fields[8], fields[9], fields[10], fields[11],
-                                        fields[12], fields[13]
+                                        fields[12], fields[13], fields[14]
                                         ))
         f.close()
         return orders
-
 
     def raise_order(self):
         print("Starting Order Loader Console")
@@ -122,7 +121,7 @@ class PhoenixOrderLoader(PhoenixAbstractOrderLoader):
             "Enter date [yyyy-MM-dd]: (" + datetime.now().strftime("%Y-%m-%d") + ") ") or datetime.now().strftime(
             "%Y-%m-%d")
         time_value = input("Enter time [HH:mm:ss]: ") or "00:00:00"
-        notes_value = input("Additional notes: ") or "Newly created order"
+        notes_value = input("Additional notes: ") or f"Order has been created on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
 
         print(f"""
         User ID : {user_id},
@@ -141,6 +140,7 @@ class PhoenixOrderLoader(PhoenixAbstractOrderLoader):
             print("[INFO] Updating Order Book")
             new_order_id = self.get_last_order_id() + 1
             order_ref = uuid.uuid4()
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             price = int(order_client_detail.rate_1_H) + int(surplus) - int(deductions)
             order = Order(new_order_id, str(order_ref), user_id, order_client_detail.username,
                           order_client_detail.location,
@@ -150,11 +150,10 @@ class PhoenixOrderLoader(PhoenixAbstractOrderLoader):
                           deductions,
                           surplus,
                           price,
-                          "COMMITTED", notes_value)
+                          "COMMITTED", notes_value, timestamp)
             self.update_order_book(order)
         else:
             print("[WARN] Order Request is rejected")
-
 
     def show_orders(self):
         orders = self.get_orders([])
@@ -164,8 +163,6 @@ class PhoenixOrderLoader(PhoenixAbstractOrderLoader):
             print(f"[INFO] Trade Date : {order.date_of_event} {order.time_of_event}")
             print(f"[INFO] Order Status : {order.status}")
             print("----------------------------------------------------------")
-
-    ## cancel an order referencing the order ref
 
     def cancel_order(self, order_ref: str):
 
@@ -184,10 +181,14 @@ class PhoenixOrderLoader(PhoenixAbstractOrderLoader):
 
         for order in committed_order_list:
             if order.get_order_ref() == order_ref and order.get_order_ref() not in cancelled_order_refs:
+                order.set_id(self.get_last_order_id() + 1)
                 order.set_status("CANCELLED")
+                order.set_notes(f"Order has been cancelled on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                order.set_timestamp(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                 self.update_order_book(order)
-                break
-        print(f"[INFO] orderRef={order_ref} |There were committed orders with this ref that could be cancelled")
+                print(f"[INFO] orderRef={order_ref} | Orders has been cancelled")
+                return
+        print(f"[INFO] orderRef={order_ref} | There are no committed orders with this ref that could be cancelled")
 
     def execute_order(self):
         orders = self.get_orders([])
@@ -208,14 +209,17 @@ class PhoenixOrderLoader(PhoenixAbstractOrderLoader):
 
         for order in committed_order_list:
             if order.get_order_ref() in cancelled_order_refs:
-                print(f"[INFO] orderRef={order.get_order_ref()} | Order has been previously cancelled.")
+                print(f"[INFO] orderRef={order.get_order_ref()} | Order is already cancelled.")
             elif order.get_order_ref() in executed_orders_ref:
-                print(f"[INFO] orderRef={order.get_order_ref()} | Order has been previously executed.")
+                print(f"[INFO] orderRef={order.get_order_ref()} | Order is already executed.")
             else:
                 dt = datetime.strptime(order.date_of_event + " " + order.time_of_event, "%Y-%m-%d %H:%M:%S")
-                print(dt)
                 if dt < datetime.now():
                     # if the date of this order (in committed status) has passed, then add it to the order book as
                     # an executed order
+                    order.set_id(self.get_last_order_id() + 1)
                     order.set_status("EXECUTED")
+                    order.set_notes(f"Order has been executed on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                    order.set_timestamp(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                     self.update_order_book(order)
+                    print(f"[INFO] orderRef={order.get_order_ref()} | Order is now executed.")

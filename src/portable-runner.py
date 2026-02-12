@@ -186,7 +186,10 @@ try:
             order_loader.execute_order()
         elif sys.argv[1] == "cancel-order":
             order_loader = PhoenixOrderLoader(propertyManager)
-            order_loader.cancel_order()
+            order_loader.cancel_order(sys.argv[2])
+        elif sys.argv[1] == "show-orders":
+            order_loader = PhoenixOrderLoader(propertyManager)
+            order_loader.show_orders()
         else:
             connector.start()
             print("[INFO] Connect to service provider and generate feed file")
