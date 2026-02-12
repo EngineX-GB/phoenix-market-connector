@@ -10,7 +10,7 @@ from portable.WatchListManager import WatchListManager
 from PathController import PathController
 from PhoenixServiceReportV2Loader import PhoenixServiceReportV2Loader
 from PhoenixFeedbackV2Loader import PhoenixFeedbackV2Loader
-from src.loader.PhoenixOrderLoader import PhoenixOrderLoader
+from loader.PhoenixOrderLoader import PhoenixOrderLoader
 from util.PhoenixUtil import PhoenixUtil
 from util.PropertyFileReader import PropertyFileReader
 from model.PropertyManager import PropertyManager

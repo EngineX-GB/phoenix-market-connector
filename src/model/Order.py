@@ -1,9 +1,10 @@
 class Order:
 
-    def __init__(self, id, user_id, username, location, date_of_event,
+    def __init__(self, id, order_ref, user_id, username, location, date_of_event,
                  time_of_event, duration, rate, deductions, surplus,
                  price, status, notes):
         self.id = id
+        self.order_ref = order_ref
         self.user_id = user_id
         self.username = username
         self.location = location
@@ -20,6 +21,7 @@ class Order:
 
     def generate_record(self):
         return (str(self.id) + self.DELIMITER
+                + self.order_ref + self.DELIMITER
                 + self.user_id + self.DELIMITER
                 + self.username + self.DELIMITER
                 + self.location + self.DELIMITER

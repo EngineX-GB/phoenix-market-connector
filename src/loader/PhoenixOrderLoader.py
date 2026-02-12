@@ -1,8 +1,11 @@
 import os
+import uuid
+from datetime import datetime
 
-from src.model.Order import Order
-from src.model.PropertyManager import PropertyManager
-from src.util.PhoenixUtil import PhoenixUtil
+from model.Order import Order
+from model.OrderClientDetail import OrderClientDetail
+from model.PropertyManager import PropertyManager
+from util.PhoenixUtil import PhoenixUtil
 
 
 class PhoenixOrderLoader:
@@ -66,14 +69,20 @@ class PhoenixOrderLoader:
         f.write(order.generate_record() + "\n")
         f.close()
 
+    def handle_manual_entry_parameters(self):
+        username = input("Enter Username: ")
+        location = input("Select Location: ")
+        region = input("Region: ")
+        rate_1_H = input("Enter rate: ")
+        order_client_detail = OrderClientDetail(username, location, region, rate_1_H)
+        return order_client_detail
+
     def execute(self, manual_entry):
         print("Starting Order Loader Console")
+        order_client_detail = None
         user_id = input("Enter the user ID: ")
         if manual_entry:
-            username = input("Enter Username: ")
-            location = input("Select Location: ")
-            region = input("Region: ")
-            rate_1_H = input("Enter rate: ")
+            order_client_detail = self.handle_manual_entry_parameters()
         else:
             try:
                 # automate this by looking up the data in today's feed
@@ -83,38 +92,57 @@ class PhoenixOrderLoader:
                     location = matched_record["location"]
                     region = matched_record["region"]
                     rate_1_H = matched_record["rate_1h"]
+                    order_client_detail = OrderClientDetail(username, location, region, rate_1_H)
                 else:
-                    raise Exception("No matching user could be found to autopopulate data. Rerun this operation "
-                                    "with the --manual flag")
+                    order_client_detail = self.handle_manual_entry_parameters()
             except:
-                print("An error occurred when trying to auto populate fields. Re-run with --manual flag enter manually")
+                print("[ERROR] An error occurred when trying to auto populate fields. Re-run with --manual flag enter manually")
                 return
-        duration = input("Enter duration: ")
-        surplus = input("Enter cost of extras/ surplus: ")
-        deductions = input("Enter cost of deductions: ")
-        date_value = input("Enter date [yyyy-MM-dd]: ")
-        time_value = input("Enter time [HH:mm:ss]: ")
+        duration = input("Enter duration: [1, 1.5, 2...] (1) ") or "1"
+        surplus = input("Enter cost of extras/ surplus: (0) ") or "0"
+        deductions = input("Enter cost of deductions: (0) ") or "0"
+        date_value = input("Enter date [yyyy-MM-dd]: (" + datetime.now().strftime("%Y-%m-%d") + ") ") or datetime.now().strftime("%Y-%m-%d")
+        time_value = input("Enter time [HH:mm:ss]: ") or "00:00:00"
+        notes_value = input("Additional notes") or "Newly created order"
 
 
         print(f"""
         User ID : {user_id},
-        Username : {username}
-        Location: {location},
-        Region: {region},
+        Username : {order_client_detail.username}
+        Location: {order_client_detail.location},
+        Region: {order_client_detail.region},
         Duration: {duration},
-        Rate (1H): {rate_1_H},
+        Rate (1H): {order_client_detail.rate_1_H},
         Surplus: {surplus},
         Deductions: {deductions},
         Date : {date_value},
         Time : {time_value},
         """)
-        confirm = input("Confirm? [y/n")
+        confirm = input("Confirm? [y/n] ")
         if "y" == confirm.lower():
             print("Updating Order Book")
             new_order_id = self.get_last_order_id() + 1
-            price = int(rate_1_H) + int(surplus) - int(deductions)
-            order = Order(new_order_id, user_id, username, location, date_value, time_value, duration, rate_1_H, deductions,
-                          surplus, price, "COMMITTED", "")
+            order_ref = uuid.uuid4()
+            price = int(order_client_detail.rate_1_H) + int(surplus) - int(deductions)
+            order = Order(new_order_id, str(order_ref), user_id, order_client_detail.username,
+                          order_client_detail.location,
+                          date_value, time_value,
+                          duration,
+                          order_client_detail.rate_1_H,
+                          deductions,
+                          surplus,
+                          price,
+                          "COMMITTED", notes_value)
             self.update_order_book(order)
         else:
             print("Order Request is rejected")
+
+    ## TODO: Show list of orders with order ref
+
+    ## cancel an order referencing the order ref
+
+    ## When initialising the order loader, do a check to see that all orders are not in a committed state after the
+    ## trade date
+
+    ## amend an order
+
