@@ -81,6 +81,10 @@ help_info() {
 	echo "sh ../run.sh --fixdup <date (optional)>"
 	echo "sh ../run.sh --chkdup-all"
 	echo "sh ../run.sh --fixdup-all"
+	echo "sh runp.sh --execute-orders"
+	echo "sh runp.sh --show-orders"
+	echo "sh runp.sh --raise-order"
+	echo "sh runp.sh --cancel-order <order-ref>"
 }
 
 #
@@ -258,4 +262,12 @@ elif [ $1 = '--feedback-v2' ] && [ $2 = '--stats' ]
   then python portable-runner.py "feedbackv2" $2
 elif [ $1 = '--feedback-v2' ] && [ $2 = '--standard' ]
   then python portable-runner.py "feedbackv2" $2
+elif [ $1 = '--raise-order' ]
+  then python portable-runner.py "raise-order"
+elif [ $1 = '--show-orders' ]
+  then python portable-runner.py "show-orders"
+elif [ $1 = '--execute-orders' ]
+  then python portable-runner.py "execute-orders"
+elif [ $1 = '--cancel-order' ]
+  then python portable-runner.py "cancel-order" $2
 fi

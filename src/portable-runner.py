@@ -10,6 +10,7 @@ from portable.WatchListManager import WatchListManager
 from PathController import PathController
 from PhoenixServiceReportV2Loader import PhoenixServiceReportV2Loader
 from PhoenixFeedbackV2Loader import PhoenixFeedbackV2Loader
+from loader.PhoenixOrderLoader import PhoenixOrderLoader
 from util.PhoenixUtil import PhoenixUtil
 from util.PropertyFileReader import PropertyFileReader
 from model.PropertyManager import PropertyManager
@@ -177,6 +178,18 @@ try:
             if len(sys.argv) == 4:
                 argList.append(sys.argv[3])
             imageFetcher.main(argList)
+        elif sys.argv[1] == "raise-order":
+            order_loader = PhoenixOrderLoader(propertyManager)
+            order_loader.raise_order()
+        elif sys.argv[1] == "execute-orders":
+            order_loader = PhoenixOrderLoader(propertyManager)
+            order_loader.execute_order()
+        elif sys.argv[1] == "cancel-order":
+            order_loader = PhoenixOrderLoader(propertyManager)
+            order_loader.cancel_order(sys.argv[2])
+        elif sys.argv[1] == "show-orders":
+            order_loader = PhoenixOrderLoader(propertyManager)
+            order_loader.show_orders()
         else:
             connector.start()
             print("[INFO] Connect to service provider and generate feed file")
