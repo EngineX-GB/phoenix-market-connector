@@ -80,7 +80,7 @@ help_info() {
 	echo "sh ../run.sh --chkdup <date (optional)>"
 	echo "sh ../run.sh --fixdup <date (optional)>"
 	echo "sh ../run.sh --chkdup-all"
-	echo "sh ../run.sh --fixdup-all"
+	echo "sh ../runp.sh --fixdup-all"
 	echo "sh runp.sh --execute-orders"
 	echo "sh runp.sh --show-orders"
 	echo "sh runp.sh --raise-order"
