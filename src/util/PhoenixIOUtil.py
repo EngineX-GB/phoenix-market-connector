@@ -4,6 +4,17 @@ import os
 class PhoenixIOUtil:
 
     @staticmethod
+    def update_data_file(filepath, write_mode, lines: list[str]):
+        f = open(filepath, write_mode, encoding='utf-8')
+        for line in lines:
+            f.write(line + "\n")
+        f.close()
+
+    @staticmethod
+    def create_blank_file(filepath: str):
+        open(filepath, 'w', encoding='utf-8').close()
+
+    @staticmethod
     def fetch_all_feed_data(feedsDirectory: str):
         todaysFeedDirectory = feedsDirectory + "/" + datetime.datetime.now().strftime("%Y-%m-%d")
         all_lines = list()
