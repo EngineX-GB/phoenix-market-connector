@@ -153,7 +153,15 @@ class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
             # check if the ratings for the user have already been downloaded.
             # if so, then ignore this user and move onto the next
 
-            user_list_urls = self.read_profile_urls_from_userlist_temp_file()
+            # 2026-02-13: Here, check the arg list for a setting called --smartload.
+            # if --smartload is set, then only get profiles with ratings greater than 0.
+            # otherwise, get the whole lot, as normal.
+            if "--smartloading" in args:
+                print("[INFO] Smart loading is on. Clients with ratings greater than 0 will be downloaded")
+                user_list_urls = self.read_profile_urls_from_userlist_temp_file_with_more_than_zero_feedback()
+            else:
+                print("[INFO] Smart loading is off. All client feedback will be downloaded")
+                user_list_urls = self.read_profile_urls_from_userlist_temp_file()
 
             for url in user_list_urls:
                 userId = self.extractUserId(url)

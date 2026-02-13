@@ -6,6 +6,9 @@ import datetime
 import hashlib
 import requests
 
+from util.PhoenixIOUtil import PhoenixIOUtil
+
+
 class PhoenixImageFetcher:
 
     def __init__(self, propertyManager):
@@ -288,6 +291,15 @@ class PhoenixImageFetcher:
             self.get_updated_image_data(userId)
 
         elif argList[0] == "update-british-data":
+
+            downloaded_list_file_path = (self.propertyManager.getTempDirectory()
+                                         + "/temp_british_userid_downloaded_list_"
+                                         + datetime.datetime.now().strftime("%Y-%m-%d") + ".txt")
+
+            # 2026-02-13: Here, set a temp file for user media data downloaded already.
+            # If the file does not exist, then create it
+            if not os.path.exists(downloaded_list_file_path):
+                PhoenixIOUtil.create_blank_file(downloaded_list_file_path)
             userIds = []
             file = open(self.propertyManager.getTempDirectory() + "/temp_british_userid_list.txt", "r", encoding="utf-8")
             lines = file.read().splitlines()
@@ -295,15 +307,32 @@ class PhoenixImageFetcher:
             for userId in lines:
                 userIds.append(userId)
             file.close()
-            print("[INFO] Getting ready to fetch new image data based off the list")
-            totalUKUsers = len(userIds)
+
+            # do a diff between this list and the uk user list.
+            with open(downloaded_list_file_path, 'r', encoding='utf-8') as downloaded_list_file:
+                downloaded_user_ids = [line.strip() for line in downloaded_list_file]
+                downloaded_list_file.close()
+
+            # convert these into sets
+            uk_user_ids_set = set(userIds)
+            downloaded_user_ids_set = set(downloaded_user_ids)
+            new_user_id_set = set(uk_user_ids_set - downloaded_user_ids_set)
+            download_complete_list = list()
+
+            print(f"[INFO] Number of uk user_ids: {len(uk_user_ids_set)}")
+            print(f"[INFO] Number of uk user_ids downloaded: {len(downloaded_user_ids_set)}")
+            print(f"[INFO] Number of new user_ids to download : {len(new_user_id_set)}")
+            totalUKUsers = len(new_user_id_set)
             arbitraryUserCounter = 0
-            for id in userIds:
+            for id in new_user_id_set:
                 arbitraryUserCounter = arbitraryUserCounter + 1
                 print("[INFO] Examining user Id [" + id + "] (" + str(arbitraryUserCounter) + "/" + str(
                     totalUKUsers) + ")")
                 self.get_updated_image_data(id)
+                download_complete_list.append(id)
 
-
+            # If the operation is complete, then write the downloaded-user-ids into the file for later reference.
+            PhoenixIOUtil.update_data_file(downloaded_list_file_path, 'a', download_complete_list)
+            print(f"[INFO] {downloaded_list_file_path} has been updated ")
         else:
             print("[ERROR] unknown flag.")

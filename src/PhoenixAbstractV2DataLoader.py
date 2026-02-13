@@ -3,6 +3,8 @@ import os
 import re
 from abc import ABC
 
+from util.PhoenixIOUtil import PhoenixIOUtil
+
 
 class PhoenixAbstractV2DataLoader(ABC):
 
@@ -36,6 +38,23 @@ class PhoenixAbstractV2DataLoader(ABC):
         f.close()
         return urls
 
+    # TODO: get profile URLs of user data that have more than zero feedback. (Saves time downloading data)
+    def read_profile_urls_from_userlist_temp_file_with_more_than_zero_feedback(self):
+        # it will go into todays feed data and capture all the lines. Then check the rating value.
+        # if the rating is 0, then ignore the line. Only get the feedback data for the client if
+        # they have a non-zero feedback
+
+        all_feed_lines = PhoenixIOUtil.fetch_all_feed_data(".././app-data/feeds")
+        print(f"[INFO] Number of clients captured in all the feed files : {len(all_feed_lines)}")
+        profile_urls = list()
+        for line in all_feed_lines:
+            fields = line.split("|")
+            if fields[3] != "0":
+                profile_urls.append(fields[17])
+        print(f"[INFO] Number of clients with non-zero feedback = {len(profile_urls)}")
+        print(f"[INFO] Number of clients with zero feedback = {len(all_feed_lines) - len(profile_urls)}")
+        print(f"[INFO] % of clients with non-zero feedback = {(len(profile_urls) / len(all_feed_lines)) * 100}")
+        return profile_urls
 
     def read_user_ids_from_temp_feedback_file(self, feedType, isGlobal):
         if isGlobal:
