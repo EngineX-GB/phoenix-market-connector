@@ -144,6 +144,16 @@ load_feedback_in_loop() {
 	done
 }
 
+load_feedbackv2_in_loop() {
+	echo "Downloading feedback-v2 data in loop mode (with smart loading)"
+	while true
+	do
+		python portable-runner.py feedbackv2 --smartloading
+		echo "-------END---------"
+		sleep 1
+	done
+}
+
 load_experimental_data_by_date() {
 	python ExpressConnector_v4.py 1 $1
 	python ExpressConnector_v4.py 2 $1
@@ -262,6 +272,10 @@ elif [ $1 = '--feedback-v2' ] && [ $2 = '--stats' ]
   then python portable-runner.py "feedbackv2" $2
 elif [ $1 = '--feedback-v2' ] && [ $2 = '--standard' ]
   then python portable-runner.py "feedbackv2" $2
+elif [ $1 = '--feedback-v2' ] && [ $2 = '--smartloading' ]
+  then python portable-runner.py "feedbackv2" $2
+elif [ $1 = '--feedback-v2' ] && [ $2 = '--robomode' ]
+	then load_feedbackv2_in_loop
 elif [ $1 = '--raise-order' ]
   then python portable-runner.py "raise-order"
 elif [ $1 = '--show-orders' ]
