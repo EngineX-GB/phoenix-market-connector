@@ -322,7 +322,7 @@ class PhoenixImageFetcher:
             print(f"[INFO] Number of uk user_ids: {len(uk_user_ids_set)}")
             print(f"[INFO] Number of uk user_ids downloaded: {len(downloaded_user_ids_set)}")
             print(f"[INFO] Number of new user_ids to download : {len(new_user_id_set)}")
-            totalUKUsers = len(userIds)
+            totalUKUsers = len(new_user_id_set)
             arbitraryUserCounter = 0
             for id in new_user_id_set:
                 arbitraryUserCounter = arbitraryUserCounter + 1
