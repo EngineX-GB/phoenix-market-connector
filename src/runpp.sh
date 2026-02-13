@@ -6,51 +6,51 @@ LOGS_DIR="../shell/logs"
 mkdir -p "$LOGS_DIR"
 
 run_region_1() {
-  sh runp.sh --regionx 1 --range 0 3 > region1-a.txt 2>&1 &
-  sh runp.sh --regionx 1 --range 4 6 > region1-b.txt 2>&1 &
-  sh runp.sh --regionx 1 --range 7 9 > region1-c.txt 2>&1 &
-  sh runp.sh --regionx 1 --range 10 12 > region1-d.txt 2>&1 &
-  sh runp.sh --regionx 1 --range 13 15 > region1-e.txt 2>&1 &
+  sh runp.sh --regionx 1 --range 0 3 > region-1-r0_3.txt 2>&1 &
+  sh runp.sh --regionx 1 --range 4 6 > region-1-r4_6.txt 2>&1 &
+  sh runp.sh --regionx 1 --range 7 9 > region-1-r7_9.txt 2>&1 &
+  sh runp.sh --regionx 1 --range 10 12 > region-1-r10_12.txt 2>&1 &
+  sh runp.sh --regionx 1 --range 13 15 > region-1-r13_15.txt 2>&1 &
 }
 
 run_region_2() {
-  sh runp.sh --regionx 2 --range 0 3 &
-  sh runp.sh --regionx 2 --range 4 6 &
-  sh runp.sh --regionx 2 --range 7 10 &
+  sh runp.sh --regionx 2 --range 0 3 > $LOGS_DIR/region-2-r0_3.txt 2>&1 &
+  sh runp.sh --regionx 2 --range 4 6 > $LOGS_DIR/region-2-r4_6.txt 2>&1 &
+  sh runp.sh --regionx 2 --range 7 10 > $LOGS_DIR/region-2-r7_10.txt 2>&1 &
 }
 
 run_region_3() {
-  sh runp.sh --regionx 3 --range 0 2 &
-  sh runp.sh --regionx 3 --range 3 5 &
+  sh runp.sh --regionx 3 --range 0 2 > $LOGS_DIR/region-3-r0_2.txt 2>&1 &
+  sh runp.sh --regionx 3 --range 3 5 > $LOGS_DIR/region-3-r3_5.txt 2>&1 &
 }
 
 run_region_4() {
-  sh runp.sh --regionx 4 --range 0 2 &
-  sh runp.sh --regionx 4 --range 3 5 &
+  sh runp.sh --regionx 4 --range 0 2 > $LOGS_DIR/region-4-r0_2.txt 2>&1 &
+  sh runp.sh --regionx 4 --range 3 5 > $LOGS_DIR/region-4-r3_5.txt 2>&1 &
 }
 
 run_region_5() {
-  sh runp.sh --regionx 5 --range 0 2 &
-  sh runp.sh --regionx 5 --range 3 4 &
-  sh runp.sh --regionx 5 --range 5 6 &
+  sh runp.sh --regionx 5 --range 0 2 > $LOGS_DIR/region-5-r0_2.txt 2>&1 &
+  sh runp.sh --regionx 5 --range 3 4 > $LOGS_DIR/region-5-r3_4.txt 2>&1 &
+  sh runp.sh --regionx 5 --range 5 6 > $LOGS_DIR/region-5-r5_6.txt 2>&1 &
 }
 
 run_region_7() {
-  sh runp.sh --region 7 &
+  sh runp.sh --region 7 > $LOGS_DIR/region-7.txt 2>&1 &
 }
 
 run_region_8() {
-  sh runp.sh --region 8
+  sh runp.sh --region 8 > $LOGS_DIR/region-8.txt 2>&1 &
 }
 
 run_region_9() {
-  sh runp.sh --regionx 9 --range 0 3
-  sh runp.sh --regionx 9 --range 4 6
-  sh runp.sh --regionx 9 --range 7 9
+  sh runp.sh --regionx 9 --range 0 3 > $LOGS_DIR/region-9-r0_3.txt 2>&1 &
+  sh runp.sh --regionx 9 --range 4 6 > $LOGS_DIR/region-9-r4_6.txt 2>&1 &
+  sh runp.sh --regionx 9 --range 7 9 > $LOGS_DIR/region-9-r7_9.txt 2>&1 &
 }
 
 run_region_10() {
-  sh runp.sh --region 10
+  sh runp.sh --region 10 > $LOGS_DIR/region-10.txt 2>&1 &
 }
 
 run_region_block_1() {
