@@ -1,13 +1,18 @@
 {
     "application": "phoenix-market-connector",
-    "version": "3.0.18",
-    "date": "2025-11-21",
+    "version": "3.0.19",
+    "date": "2026-02-14",
     "changeset": [
         "2022-11-27 | Adding app.json and application details parameter",
         "2022-11-29 | Enable page range downloading",
         "2022-12-18 | Handle ConnectionError",
         "2025-07-27 | Fixed feedback and image script. Added height and likes list.",
         "2025-10-18 | Major refactoring exercise to organise code for future improvements",
-        "2025-10-26 | Added auto-generated config creation if config is not present"
+        "2025-10-26 | Added auto-generated config creation if config is not present",
+        "2026-02-12 | Handle Order Management Feeds on portable version",
+        "2026-02-13 | Fixed Media download to track/ skip previously downloaded data",
+        "2026-02-13 | Added smart-loading mode for feedback-v2 downloading",
+        "2026-02-13 | Added new shell script for processing multiple feeds in the background",
+        "2026-02-14 | Added template for the image viewer page. To be used by the HTMLGenerator"
     ]
 }
