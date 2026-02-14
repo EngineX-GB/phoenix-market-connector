@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+        html {
+            margin:0;
+        }
+
+        body {
+            font-size:10pt;
+            font-family: calibri;
+            background: rgb(24, 34, 41);
+            color:white;
+        }
+        div#header {
+            background-image: linear-gradient(to bottom right, rgb(34, 127, 233), rgb(8, 4, 43));
+            color: white;
+        }
+        div#sectionListingHeader {
+            background: rgb(61, 124, 69);
+            color: white;
+        }
+        div#sectionWatchlistHeader {
+            background: rgb(216, 20, 20);
+            color: white;
+        }
+        .summaryPanel {
+            background-image: linear-gradient(to bottom right, rgb(46, 45, 45), rgb(94, 92, 92));
+            overflow:hidden;
+            display: flex;
+        }
+        .summaryNode {
+            text-align: center;
+            border-style: groove;
+            border-width: thin;
+            margin:10;
+            font-size: 6pt;
+            padding: 4px;
+        }
+        .logo {
+            font-style: italic;
+            font-weight: bold;
+        }
+    </style>
+    <script type="text/javascript">
+
+        var imagePartNumber = 1
+        var maxPartNumber = 3
+        var minPartNumber = 1
+
+        function previousButton() {
+            if (imagePartNumber > 1) {
+                imagePartNumber--
+                var doc = document.getElementById("embeddedpane")
+                doc.setAttribute("src", "file:///storage/emulated/0/dcim/phoenix-market-connector/app-data/images/" + userId + "/" + userId +"_" + imagePartNumber +".jpg")
+                // test purposes - commented out ::::: doc.setAttribute("src", "file:///C:/Users/Phoenix/Desktop/"+ userId +"_" + imagePartNumber +".jpg")
+
+            }
+        }
+
+        function nextButton() {
+            if (imagePartNumber < 3) {
+                imagePartNumber++
+                var doc = document.getElementById("embeddedpane")
+                doc.setAttribute("src", "file:///storage/emulated/0/dcim/phoenix-market-connector/app-data/images/" + userId + "/" + userId +"_" + imagePartNumber +".jpg")
+                // test purposes - commented out :::::: doc.setAttribute("src", "file:///C:/Users/Phoenix/Desktop/"+ userId +"_" + imagePartNumber +".jpg")
+
+            }
+        }
+
+        function init() {
+            let searchString = window.location.search;
+            userId = searchString.replace("?userId=", "");
+
+            let height = window.innerHeight;
+            let width = window.innerWidth;
+            var embedElement = document.querySelector("embed")
+            embedElement.setAttribute("height", (height - (height * 0.01)) / 1.2)
+            embedElement.setAttribute("width", width - (width * 0.01))
+
+            var doc = document.getElementById("embeddedpane")
+            doc.setAttribute("src", "file:///storage/emulated/0/dcim/phoenix-market-connector/app-data/images/" + userId + "/" + userId +"_" + imagePartNumber +".jpg")
+        }
+    </script>
+</head>
+<body onload="init()">
+    <div id="header">
+        <span class=logo>Phoenix</span> Data Report
+    </div>
+    <div class="summaryPanel">
+        <div class=summaryNode onclick="previousButton()">
+            <div class="summaryHeader">
+                &lt&lt Previous
+            </div>
+        </div>
+        <div class=summaryNode onclick="nextButton()">
+            <div class="summaryHeader">
+                Next &gt&gt
+            </div>
+        </div>
+    </div>
+
+
+    <div>
+        <div>
+            <div id="sectionListingHeader">
+                Image Viewer
+            </div>
+            <embed id="embeddedpane" type="text/html" src="listings.html" height="200" width="200">
+        </div>
+    </div>
+</body>
+</html>

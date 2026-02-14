@@ -18,6 +18,7 @@ class HtmlGenerator:
         listingHtml = self.readHtmlTemplate("template/listings.template")
         mainHtml = self.readHtmlTemplate("template/main.template")
         watchListHtml = self.readHtmlTemplate("template/listings.template")
+        imageViewerHtml = self.readHtmlTemplate("template/imageviewer.template")
         client_rows = ""
         watchlist_rows = ""
         client_row_count = 0
@@ -52,6 +53,9 @@ class HtmlGenerator:
             "${WATCHLIST_COUNT}", str(watchlist_row_count))
         self.generateHtmlPage(self.propertyManager.getReportsDirectory() + "/main.html", mainPage)
 
+        # generate the image viewer page
+        self.generateHtmlPage(self.propertyManager.getReportsDirectory() + "/imageviewer.html", imageViewerHtml
+                              )
     def generateHtmlPage(self, file, html):
         if not os.path.exists(file):
             open(file, "w", encoding="utf-8").close()
