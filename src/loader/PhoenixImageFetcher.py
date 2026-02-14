@@ -142,7 +142,7 @@ class PhoenixImageFetcher:
             headers = {"User-agent": "Mozilla/5.0"}
             for i in range(1, 4):
                 url = self.propertyManager.getImageDomainUrl() + "/ci/f/" + user_id + "_" + str(i) + ".jpg"
-                print("[DEBUG] Check file on server to see if hash matches with stored hashes [" + url + "]")
+                # print("[DEBUG] Check file on server to see if hash matches with stored hashes [" + url + "]")
                 response = requests.get(url, headers=headers)
                 response.raise_for_status()  # Throws an error if the request failed
 
@@ -291,7 +291,6 @@ class PhoenixImageFetcher:
             self.get_updated_image_data(userId)
 
         elif argList[0] == "update-british-data":
-
             downloaded_list_file_path = (self.propertyManager.getTempDirectory()
                                          + "/temp_british_userid_downloaded_list_"
                                          + datetime.datetime.now().strftime("%Y-%m-%d") + ".txt")
@@ -307,32 +306,37 @@ class PhoenixImageFetcher:
             for userId in lines:
                 userIds.append(userId)
             file.close()
-
-            # do a diff between this list and the uk user list.
-            with open(downloaded_list_file_path, 'r', encoding='utf-8') as downloaded_list_file:
-                downloaded_user_ids = [line.strip() for line in downloaded_list_file]
-                downloaded_list_file.close()
-
-            # convert these into sets
-            uk_user_ids_set = set(userIds)
-            downloaded_user_ids_set = set(downloaded_user_ids)
-            new_user_id_set = set(uk_user_ids_set - downloaded_user_ids_set)
             download_complete_list = list()
+            try:
+                # do a diff between this list and the uk user list.
+                with open(downloaded_list_file_path, 'r', encoding='utf-8') as downloaded_list_file:
+                    downloaded_user_ids = [line.strip() for line in downloaded_list_file]
+                    downloaded_list_file.close()
 
-            print(f"[INFO] Number of uk user_ids: {len(uk_user_ids_set)}")
-            print(f"[INFO] Number of uk user_ids downloaded: {len(downloaded_user_ids_set)}")
-            print(f"[INFO] Number of new user_ids to download : {len(new_user_id_set)}")
-            totalUKUsers = len(new_user_id_set)
-            arbitraryUserCounter = 0
-            for id in new_user_id_set:
-                arbitraryUserCounter = arbitraryUserCounter + 1
-                print("[INFO] Examining user Id [" + id + "] (" + str(arbitraryUserCounter) + "/" + str(
-                    totalUKUsers) + ")")
-                self.get_updated_image_data(id)
-                download_complete_list.append(id)
+                # convert these into sets
+                uk_user_ids_set = set(userIds)
+                downloaded_user_ids_set = set(downloaded_user_ids)
+                new_user_id_set = set(uk_user_ids_set - downloaded_user_ids_set)
 
-            # If the operation is complete, then write the downloaded-user-ids into the file for later reference.
-            PhoenixIOUtil.update_data_file(downloaded_list_file_path, 'a', download_complete_list)
-            print(f"[INFO] {downloaded_list_file_path} has been updated ")
+                print(f"[INFO] Number of uk user_ids: {len(uk_user_ids_set)}")
+                print(f"[INFO] Number of uk user_ids downloaded: {len(downloaded_user_ids_set)}")
+                print(f"[INFO] Number of new user_ids to download : {len(new_user_id_set)}")
+                totalUKUsers = len(new_user_id_set)
+                arbitraryUserCounter = 0
+                for id in new_user_id_set:
+                    arbitraryUserCounter = arbitraryUserCounter + 1
+                    print("[INFO] Examining user Id [" + id + "] (" + str(arbitraryUserCounter) + "/" + str(
+                        totalUKUsers) + ")")
+                    self.get_updated_image_data(id)
+                    download_complete_list.append(id)
+
+                # If the operation is complete, then write the downloaded-user-ids into the file for later reference.
+                PhoenixIOUtil.update_data_file(downloaded_list_file_path, 'a', download_complete_list)
+                print(f"[INFO] {downloaded_list_file_path} has been updated ")
+            except KeyboardInterrupt:
+                print(f"[INFO] Interrupted media download. Saving {len(download_complete_list)} user data to temp file.")
+                PhoenixIOUtil.update_data_file(downloaded_list_file_path, 'a', download_complete_list)
         else:
             print("[ERROR] unknown flag.")
+
+
