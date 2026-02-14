@@ -12,7 +12,7 @@
         "2026-02-12 | Handle Order Management Feeds on portable version",
         "2026-02-13 | Fixed Media download to track/ skip previously downloaded data",
         "2026-02-13 | Added smart-loading mode for feedback-v2 downloading",
-        "2026-02-13 | Added new shell script for processing multiple feeds in the background",
-        "2026-02-14 | Added template for the image viewer page. To be used by the HTMLGenerator"
+        "2026-02-13 | Added new shell script for processing feeds in the background",
+        "2026-02-14 | Added template for the image viewer page."
     ]
 }

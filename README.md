@@ -170,3 +170,14 @@ Linux (binary):
 
 Linux (portable)
 `curl -O https://raw.githubusercontent.com/EngineX-GB/phoenix-market-connector/master/release/linux/install-src.sh`
+
+-------------
+
+## Huawei Device for Termux.
+
+Note that the physical to emulated device is mapped as following:
+`cd /`
+`cd /storage/emulated/0/ --> /`
+
+Then you can run:
+`cd /storage/dcim/phoenix-market-connector`
