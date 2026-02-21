@@ -327,8 +327,11 @@ class PhoenixImageFetcher:
                     arbitraryUserCounter = arbitraryUserCounter + 1
                     print("[INFO] Examining user Id [" + id + "] (" + str(arbitraryUserCounter) + "/" + str(
                         totalUKUsers) + ")")
-                    self.get_updated_image_data(id)
-                    download_complete_list.append(id)
+                    try:
+                        self.get_updated_image_data(id)
+                        download_complete_list.append(id)
+                    except requests.exceptions.HTTPError:
+                        print(f"[ERROR] Unable to download image for {id}. HTTPError")
 
                 # If the operation is complete, then write the downloaded-user-ids into the file for later reference.
                 PhoenixIOUtil.update_data_file(downloaded_list_file_path, 'a', download_complete_list)
