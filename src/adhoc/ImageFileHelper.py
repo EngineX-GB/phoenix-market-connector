@@ -21,7 +21,8 @@ class ImageFileHelper:
             source_user_folder = f"{src_image_directory}/{user_id}"
             destination_user_folder = f"{dest_image_directory}/{user_id}"
             if not os.path.exists(source_user_folder):
-                print(f"[ERROR] Directory {source_user_folder} does not exist")
+                #print(f"[WARN] Directory {source_user_folder} does not exist")
+                pass
             else:
                 # copy the directory and it's contents into the new folder
                 print(f"[INFO] Copying {source_user_folder} -> {destination_user_folder} ")
@@ -33,7 +34,8 @@ class ImageFileHelper:
         for user_id in user_id_set:
             user_folder = f"{image_directory}/{user_id}"
             if not os.path.exists(user_folder):
-                print(f"[ERROR] Directory {user_folder} does not exist")
+                # print(f"[ERROR] Directory {user_folder} does not exist")
+                pass
             else:
                 # copy the directory and it's contents into the new folder
                 print(f"[INFO] Deleting {user_folder}")
@@ -53,15 +55,17 @@ class ImageFileHelper:
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         image_file_helper = ImageFileHelper()
-        user_id_set = image_file_helper.read_user_id_list("C:/Users/user-id-list.txt")
-        if len(user_id_set):
+        user_id_set = image_file_helper.read_user_id_list("../.././app-data/static/global-userid-list.txt")
+        user_id_set = [line.strip() for line in user_id_set]
+        if len(user_id_set) == 0:
             print("[WARN] List is empty. Exiting")
             exit(0)
-        if sys.argv[1] == "copy":
-            image_file_helper.copy_image_data(user_id_set, "C:/Users/img/src", "C:/Users/img/dest")
+        if sys.argv[1] == "--copy":
+            image_file_helper.copy_image_data(user_id_set, "../.././app-data/images",
+                                              "../.././app-data/migration/images")
             print("[INFO] Copying completed.")
-        if sys.argv[1] == "delete":
-            image_file_helper.delete_image_data(user_id_set, "C:/Users/img/src")
+        if sys.argv[1] == "--delete":
+            image_file_helper.delete_image_data(user_id_set, "../.././app-data/images")
             print("[INFO] Deletion completed.")
     else:
         print("[ERROR] Script must have at least one argument.")
