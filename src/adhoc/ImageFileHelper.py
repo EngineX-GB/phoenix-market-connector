@@ -5,7 +5,13 @@ import sys
 
 # Script: ImageFileHelper.py
 # An adhoc script to copy specific user files to a temporary location that can be extracted later.
+#
+# Usage: python ImageFileHelper.py --copy           to copy the media data defined in the uk-userid-list from src to dest
+#        python ImageFileHelper.py --delete         to delete the media data at the source, using the user ids from the
+#                                                   uk-userid-list
+#
 # 2026-02-14: This is yet to be tested properly before use.
+# 2026-02-21: A global list of UK user Ids are required, not the typical global userid list.
 
 class ImageFileHelper:
 
@@ -55,17 +61,17 @@ class ImageFileHelper:
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         image_file_helper = ImageFileHelper()
-        user_id_set = image_file_helper.read_user_id_list("../.././app-data/static/global-userid-list.txt")
+        user_id_set = image_file_helper.read_user_id_list("/data/data/com.termux/files/home/storage/dcim/phoenix-market-connector/app-data/static/global-userid-list.txt")
         user_id_set = [line.strip() for line in user_id_set]
         if len(user_id_set) == 0:
             print("[WARN] List is empty. Exiting")
             exit(0)
         if sys.argv[1] == "--copy":
-            image_file_helper.copy_image_data(user_id_set, "../.././app-data/images",
-                                              "../.././app-data/migration/images")
+            image_file_helper.copy_image_data(user_id_set, "/data/data/com.termux/files/home/storage/dcim/phoenix/images",
+                                              "/data/data/com.termux/files/home/storage/dcim/phoenix-market-connector/app-data/migration/images")
             print("[INFO] Copying completed.")
         if sys.argv[1] == "--delete":
-            image_file_helper.delete_image_data(user_id_set, "../.././app-data/images")
+            image_file_helper.delete_image_data(user_id_set, "/data/data/com.termux/files/home/storage/dcim/phoenix/images")
             print("[INFO] Deletion completed.")
     else:
         print("[ERROR] Script must have at least one argument.")
