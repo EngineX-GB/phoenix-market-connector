@@ -5,6 +5,7 @@ src/.vscode/
 deploy/distro/
 deploy/build
 deploy/dist
+deploy/scm-config.properties
 release/linux/phoenix-v3/
 properties/
 build/
