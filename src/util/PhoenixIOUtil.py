@@ -38,3 +38,9 @@ class PhoenixIOUtil:
             return "Windows"
         else:
             return os.name
+
+    @staticmethod
+    def handle_response_message(status : str, message : str, detail: str):
+        return {"status": status,
+                        "message": message,
+                        "detail": detail }

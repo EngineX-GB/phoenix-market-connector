@@ -84,12 +84,12 @@ def ping():
     return {"response": "pong"}
 
 
-@app.get('/load/region/{regionid}')
+@app.post('/load/region/{regionid}')
 def run_load_by_region(regionid: str):
     return system_controller.run_load("region", regionid)
 
 
-@app.get('/load/feedback')
+@app.post('/load/feedback')
 def run_feedback_load():
     return system_controller.run_load("feedback", None)
 

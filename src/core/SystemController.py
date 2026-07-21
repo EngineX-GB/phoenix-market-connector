@@ -1,6 +1,7 @@
 import threading
 
 from src.service.ClientService import ClientService
+from src.util.PhoenixIOUtil import PhoenixIOUtil
 
 
 class SystemController:
@@ -16,10 +17,11 @@ class SystemController:
     # the database if they don't exist already.
     def run_feedbackv2_load(self, userIds : list[str]):
         if len(userIds) == 0:
-            return {"error": "A job was submitted to download feedback-v2 entries for 0 userIds."}
+            return PhoenixIOUtil.handle_response_message(
+                "ERROR", "A job was submitted to download feedback-v2 entries for 0 userIds.", "")
         load_thread = threading.Thread(target=self.feedbackv2_loader.load_by_userId, args=(userIds,), name="load-feedback-v2-by-userids")
         load_thread.start()
-        return {"started": "A load for feedback-v2 has started."}
+        return PhoenixIOUtil.handle_response_message("STARTED", "A load for feedback-v2 has started.", "")
 
     def run_load(self, load_type, parameter):
         # if the load_type = region, then parameter could be 1,2 3,n
@@ -27,21 +29,21 @@ class SystemController:
             thread_name = "LOAD_REGION_" + parameter  # e.g. LOAD_REGION_1
             # check that there is no existing thread running this process:
             if self.is_thread_running(thread_name):
-                return {"error": "A load for region " + parameter + " is currently in progress."}
-
+                return PhoenixIOUtil.handle_response_message("ERROR",
+                                                             f"A load for region {parameter} is currently in progress.","")
             # initialise required I/O for this workflow
             self.connector.start()
 
             load_thread = threading.Thread(target=self.connector.main, args=(parameter,), name=thread_name)
             load_thread.start()
-            return {"started", "A load for region " + parameter + " has started."}
+            return PhoenixIOUtil.handle_response_message("STARTED", f"A load for region {parameter} has started.","")
         elif load_type == "feedback":
             thread_name = "LOAD_FEEDBACK"
             if self.is_thread_running(thread_name):
-                return {"error": "Feedback loading is currently in progress."}
+                return PhoenixIOUtil.handle_response_message("ERROR","Feedback loading is currently in progress.","")
             load_thread = threading.Thread(target=self.feedback_loader.main, args=(["feedback","--standard"],), name=thread_name)
             load_thread.start()
-            return {"started", "Feedback loading has started."}
+            return PhoenixIOUtil.handle_response_message("STARTED", "Feedback loading has started.", "")
 
     def is_thread_running(self, thread_name):
         thread_list = threading.enumerate()
