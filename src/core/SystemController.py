@@ -1,11 +1,25 @@
 import threading
 
+from src.service.ClientService import ClientService
+
 
 class SystemController:
 
-    def __init__(self, connector, feedback_loader):
+    def __init__(self, connector, feedback_loader, feedbackv2_loader):
         self.connector = connector
         self.feedback_loader = feedback_loader
+        self.feedbackv2_loader = feedbackv2_loader
+
+
+    # if the system is fetching a selection of user ids, then there is no need to
+    # block the process from running again, since latest records will only be stored in
+    # the database if they don't exist already.
+    def run_feedbackv2_load(self, userIds : list[str]):
+        if len(userIds) == 0:
+            return {"error": "A job was submitted to download feedback-v2 entries for 0 userIds."}
+        load_thread = threading.Thread(target=self.feedbackv2_loader.load_by_userId, args=(userIds,), name="load-feedback-v2-by-userids")
+        load_thread.start()
+        return {"started": "A load for feedback-v2 has started."}
 
     def run_load(self, load_type, parameter):
         # if the load_type = region, then parameter could be 1,2 3,n

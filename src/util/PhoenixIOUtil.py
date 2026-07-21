@@ -31,3 +31,10 @@ class PhoenixIOUtil:
         else:
             print(f"[ERROR] {todaysFeedDirectory} does not exist.")
         return all_lines
+
+    @staticmethod
+    def get_os_name():
+        if os.name == "nt":
+            return "Windows"
+        else:
+            return os.name

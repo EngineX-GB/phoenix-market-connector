@@ -86,7 +86,7 @@ check_and_setup_default_properties()
 propertyFileReader = PropertyFileReader(".././properties/config.properties")
 propertyManager = PropertyManager(propertyFileReader)
 persistence = PersistenceIO(propertyManager)
-connector = PhoenixMobileConnector(propertyManager, persistence)
+connector = PhoenixMobileConnector(propertyManager, persistence, False)
 
 
 # initialise some basic things that need to exist before starting.
@@ -161,7 +161,7 @@ try:
             serviceReportLoader = PhoenixServiceReportV2Loader(propertyManager)
             serviceReportLoader.execute([sys.argv[2]])
         elif sys.argv[1] == "feedbackv2":
-            feedbackV2Loader = PhoenixFeedbackV2Loader(propertyManager)
+            feedbackV2Loader = PhoenixFeedbackV2Loader(propertyManager, False)
             feedbackV2Loader.execute([sys.argv[2]])
         elif sys.argv[1] == "feedback":
             feedbackFetcher = PhoenixFeedbackFetcher(propertyManager)

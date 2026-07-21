@@ -25,12 +25,15 @@ from util.PhoenixUtil import PhoenixUtil
 
 from PathController import PathController
 
+from src.service.ClientService import ClientService
+
 
 class PhoenixMobileConnector:
 
-    def __init__(self, propertyManager, IPersistence):
+    def __init__(self, propertyManager, IPersistence, isServiceMode):
         self.persistence = IPersistence
         self.propertyManager = propertyManager
+        self.isServiceMode = isServiceMode
 
     def start(self):
         self.persistence.start()
@@ -198,6 +201,9 @@ class PhoenixMobileConnector:
 
     def main(self, region):
         print("[INFO] Retrieving data for Region " + str(region))
+        if self.isServiceMode:
+            ClientService.send_notification("update", "load", "OK", f"Loading region {region} has started")
+
         # page 0 (i.e page 1)
         requestPayload = self.propertyManager.getRequestPayload().replace("${region.id}", region)
         response = self.connectAndRetrieve(requestPayload)
@@ -217,6 +223,9 @@ class PhoenixMobileConnector:
                     self.processSearchResults(response.text)
                     # todo: =========
                     pageNumber+=1
+            if self.isServiceMode:
+                ClientService.send_notification("update", "load-region",
+                                                "OK", f"Loading Region {region} is complete.")
             print("[INFO] Completed")
 
 

@@ -8,6 +8,8 @@ from model.FeedbackV2 import FeedbackV2
 from model.PageData import PageData
 from PhoenixAbstractV2DataLoader import PhoenixAbstractV2DataLoader
 from model import PropertyManager
+from src.model.FeedbackV2PayloadRequest import FeedbackV2PayloadRequest
+from src.service.ClientService import ClientService
 
 """
 You can run this in 2 modes:
@@ -30,9 +32,10 @@ Ensure:
 
 class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
 
-    def __init__(self, propertyManager: PropertyManager):
+    def __init__(self, propertyManager: PropertyManager, isServiceMode: bool):
         super().__init__()
         self.propertyManager = propertyManager
+        self.isServiceMode = isServiceMode
 
     def get_pagedata_for_feedback_loading(self, data) -> PageData:
 
@@ -60,17 +63,24 @@ class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
                                         item["userType"], item["userActive"])
             feedback_collection.append(feedbackRecord)
 
-        # here, try and write to persistence/ storage
-        if isGlobal:
-            feeds_directory = self.propertyManager.getFeedsFeedbackV2Directory() + "/global"
+        if self.isServiceMode:
+            # here, take the feedback_collection and put it into a rest call for the data ingestion service
+            print("[DEBUG] Publishing feedback data to the data ingestion service")
+            self.save_and_publish(feedback_collection, user_id)
         else:
-            feeds_directory = self.propertyManager.getFeedsFeedbackV2Directory() + "/" + datetime.datetime.now().strftime("%Y-%m-%d")
+            # here, try and write to persistence/ storage
+            if isGlobal:
+                feeds_directory = self.propertyManager.getFeedsFeedbackV2Directory() + "/global"
+            else:
+                feeds_directory = self.propertyManager.getFeedsFeedbackV2Directory() + "/" + datetime.datetime.now().strftime("%Y-%m-%d")
 
-        if not os.path.exists(feeds_directory):
-            os.makedirs(feeds_directory)
-        feed_file_path = feeds_directory + "/" + "feeds-feedbackv2-phoenix_" + user_id + "_" + datetime.datetime.now().strftime(
-            "%Y-%m-%d") + "_" + str(page_number_ref) + ".txt"
-        self.generate_feed_file(feedback_collection, feed_file_path)
+            if not os.path.exists(feeds_directory):
+                os.makedirs(feeds_directory)
+            feed_file_path = feeds_directory + "/" + "feeds-feedbackv2-phoenix_" + user_id + "_" + datetime.datetime.now().strftime(
+                "%Y-%m-%d") + "_" + str(page_number_ref) + ".txt"
+            self.generate_feed_file(feedback_collection, feed_file_path)
+
+
 
     def generate_feed_file(self, records, feed_file_path):
         f = open(feed_file_path, 'w', encoding='utf-8')
@@ -177,6 +187,37 @@ class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
                 print("[INFO] Feedback data for user : " + user_id + " is already downloaded. Ignoring...")
             else:
                 self.load(user_id, isGlobal)
+
+    # 200726: This function is created for allowing the user to download feedback
+    # for a selection of users.
+    # This is not used for the portable version of the market connector, only for the service mode
+    def load_by_userId (self, userIds: list[str]):
+        print("[INFO] Running load function for fetching feedback-v2 in service mode")
+        if self.isServiceMode:
+            ClientService.send_notification("update", "load", "OK", "Loading feedback for assets started")
+        for userId in userIds:
+            self.load(userId, False)
+        if self.isServiceMode:
+            ClientService.send_notification("update", "load", "OK", "Loading feedback for assets completed")
+
+
+    # TODO: Consider putting this in a persistence class for feedbackv2
+    def save_and_publish(self, records: list[FeedbackV2], user_id : str):
+        strRecords = []
+        # the list of records will be of type PhoenixClient.
+        # Convert to string before transferring over the wire.
+        for r in records:
+            strRecords.append(r.generateRecord())
+
+        requestPayload = FeedbackV2PayloadRequest(records=strRecords, user_id=user_id)
+
+        jsonRecords = json.dumps(requestPayload.model_dump())
+        ingestionServiceEndpoint = self.propertyManager.getIngestionServiceEndpoint()
+        response = requests.post(url=ingestionServiceEndpoint + "/feedbackv2", data=jsonRecords)
+        if response.status_code != 201 and response.status_code != 200:
+            print("[ERROR] Failed to publish records for ingestion. Error code : " + str(response.status_code))
+        else:
+            print("[INFO] Successfully published records for ingestion. Code : " + str(response.status_code))
 
 #
 # if __name__ == "__main__":

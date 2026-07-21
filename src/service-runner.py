@@ -10,6 +10,8 @@ from model.PropertyManager import PropertyManager
 from persistence.PersistenceNET import PersistenceNET
 from core.SystemController import SystemController
 from loader.PhoenixFeedbackFetcher import PhoenixFeedbackFetcher
+from src.PhoenixFeedbackV2Loader import PhoenixFeedbackV2Loader
+from src.util.PhoenixIOUtil import PhoenixIOUtil
 from util.PropertyFileReader import PropertyFileReader
 
 
@@ -71,9 +73,10 @@ check_and_setup_default_properties()
 propertyFileReader = PropertyFileReader(".././properties/config.properties")
 propertyManager = PropertyManager(propertyFileReader)
 persistence = PersistenceNET(propertyManager)
-connector = PhoenixMobileConnector(propertyManager, persistence)
+connector = PhoenixMobileConnector(propertyManager, persistence, True)
 feedback_fetcher = PhoenixFeedbackFetcher(propertyManager)
-system_controller = SystemController(connector, feedback_fetcher)
+feedbackv2_loader = PhoenixFeedbackV2Loader(propertyManager, True)
+system_controller = SystemController(connector, feedback_fetcher, feedbackv2_loader)
 
 
 @app.get('/ping')
@@ -90,7 +93,11 @@ def run_load_by_region(regionid: str):
 def run_feedback_load():
     return system_controller.run_load("feedback", None)
 
+@app.post("/load/feedbackv2")
+def run_feedbackv2_load(userIds: list[str]):
+    return system_controller.run_feedbackv2_load(userIds)
 
 if __name__ == "__main__":
+    print(f"Running Phoenix Market Connector Service for {PhoenixIOUtil.get_os_name()}")
     multiprocessing.freeze_support()
     uvicorn.run("service-runner:app", host="127.0.0.1", port=8001)
