@@ -1,7 +1,6 @@
 import threading
 
-from src.service.ClientService import ClientService
-from src.util.PhoenixIOUtil import PhoenixIOUtil
+from util.PhoenixIOUtil import PhoenixIOUtil
 
 
 class SystemController:

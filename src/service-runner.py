@@ -10,8 +10,8 @@ from model.PropertyManager import PropertyManager
 from persistence.PersistenceNET import PersistenceNET
 from core.SystemController import SystemController
 from loader.PhoenixFeedbackFetcher import PhoenixFeedbackFetcher
-from src.PhoenixFeedbackV2Loader import PhoenixFeedbackV2Loader
-from src.util.PhoenixIOUtil import PhoenixIOUtil
+from PhoenixFeedbackV2Loader import PhoenixFeedbackV2Loader
+from util.PhoenixIOUtil import PhoenixIOUtil
 from util.PropertyFileReader import PropertyFileReader
 
 

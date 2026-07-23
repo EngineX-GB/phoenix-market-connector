@@ -8,8 +8,8 @@ from model.FeedbackV2 import FeedbackV2
 from model.PageData import PageData
 from PhoenixAbstractV2DataLoader import PhoenixAbstractV2DataLoader
 from model import PropertyManager
-from src.model.FeedbackV2PayloadRequest import FeedbackV2PayloadRequest
-from src.service.ClientService import ClientService
+from model.FeedbackV2PayloadRequest import FeedbackV2PayloadRequest
+from service.ClientService import ClientService
 
 """
 You can run this in 2 modes:

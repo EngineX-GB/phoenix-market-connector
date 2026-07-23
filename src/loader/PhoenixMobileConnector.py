@@ -25,7 +25,7 @@ from util.PhoenixUtil import PhoenixUtil
 
 from PathController import PathController
 
-from src.service.ClientService import ClientService
+from service.ClientService import ClientService
 
 
 class PhoenixMobileConnector:
