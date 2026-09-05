@@ -192,7 +192,7 @@ try:
             order_loader = PhoenixOrderLoader(propertyManager)
             order_loader.show_orders()
         elif sys.argv[1] == "load-previews":
-            preview_loader = PhoenixPreviewFetcher(propertyManager)
+            preview_loader = PhoenixPreviewFetcher(propertyManager, False)
             preview_loader.execute()
         else:
             connector.start()

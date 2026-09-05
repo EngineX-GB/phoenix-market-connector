@@ -10,9 +10,10 @@ from model.Preview import Preview, PreviewCollapsedLine, PreviewDataHolder, Prev
 
 class PhoenixPreviewFetcher(PhoenixAbstractV2DataLoader):
 
-    def __init__(self, propertyManager):
+    def __init__(self, propertyManager, service_mode: bool):
         super().__init__()
         self.propertyManager = propertyManager
+        self.service_mode = service_mode
 
     def load(self, data):
         preview_headers = []
@@ -23,9 +24,8 @@ class PhoenixPreviewFetcher(PhoenixAbstractV2DataLoader):
             user_id = result["userId"]
             title = str(result["title"])
             details = str(result["details"])
-            #datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
-            start_date = result["startDate"]
-            end_date = result["endDate"]
+            start_date = datetime.strptime(result["startDate"], "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
+            end_date = datetime.strptime(result["endDate"], "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
             is_active = str(result["isActive"])
             business_key = str(user_id) + "_" + start_date + "_" + end_date + "_" + str(is_active)
 
@@ -41,11 +41,8 @@ class PhoenixPreviewFetcher(PhoenixAbstractV2DataLoader):
                 town = stop["town"]
                 postcode = stop["postCode"]
                 details = str(stop["details"])
-                start_date = stop["startDate"]
-                end_date = stop["endDate"]
-                #
-                # start_date_converted = datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
-                # end_date_converted = datetime.strptime(end_date, "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
+                start_date = datetime.strptime(stop["startDate"], "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
+                end_date = datetime.strptime(stop["endDate"], "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
 
                 preview_collapsed_lines.append(PreviewCollapsedLine(str(user_id), country, region, county, town,
                                                                     postcode, details, start_date, end_date,
@@ -56,8 +53,8 @@ class PhoenixPreviewFetcher(PhoenixAbstractV2DataLoader):
             # date range.
 
             for line in preview_collapsed_lines:
-                _start_date = datetime.strptime(line.start_date, "%Y-%m-%dT%H:%M:%S").date()
-                _end_date = datetime.strptime(line.end_date, "%Y-%m-%dT%H:%M:%S").date()
+                _start_date = datetime.strptime(line.start_date, "%Y-%m-%d").date()
+                _end_date = datetime.strptime(line.end_date, "%Y-%m-%d").date()
 
                 _dates = []
 
@@ -76,7 +73,9 @@ class PhoenixPreviewFetcher(PhoenixAbstractV2DataLoader):
         user_profiles = self.read_profile_urls_from_userlist_temp_file()
         if len(user_profiles) > 0:
             # get the list of user_ids that have previews already downloaded for the day
-            existing_user_id_list = self.read_user_ids_from_temp_feedback_file("preview", False)
+            existing_user_id_list = [line.rstrip("\n") for line in
+                                            self.read_user_ids_from_temp_feedback_file("preview", False)]
+
             # then go through each user id and fetch the data
             for user_profile in user_profiles:
                 user_id = self.extractUserId(user_profile)
@@ -101,8 +100,12 @@ class PhoenixPreviewFetcher(PhoenixAbstractV2DataLoader):
 
                             # here, we will just get the expanded rows (individual days)
                             print("===================")
+                            for p1 in preview_data_holder.get_preview_header():
+                                print("Tour Header : " + p1.generate_record())
+                            for p2 in preview_data_holder.get_preview_collapsed_lines():
+                                print("collapsed : " + p2.generate_record())
                             for p in preview_data_holder.get_preview_expanded_lines():
-                                print(p.generate_record())
+                                print("expanded : "+ p.generate_record())
                             print("===================")
 
                             # if successful, then update the temp list for preview files, so the same user data is not
