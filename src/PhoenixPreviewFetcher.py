@@ -15,7 +15,7 @@ class PhoenixPreviewFetcher(PhoenixAbstractV2DataLoader):
         self.propertyManager = propertyManager
         self.service_mode = service_mode
 
-    def load(self, data):
+    def process(self, data):
         preview_headers = []
         preview_collapsed_lines = []
         preview_expanded_lines = []
@@ -68,49 +68,63 @@ class PhoenixPreviewFetcher(PhoenixAbstractV2DataLoader):
 
         return PreviewDataHolder(preview_headers, preview_collapsed_lines, preview_expanded_lines)
 
+    def extract_preview_data(self, user_id: str):
+        headers = {"Content-Type": "application/json",
+                   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+
+        response = requests.get(
+            f"{self.propertyManager.getApiProviderUrl()}/api/Content/Tour/{user_id}?v=2", headers=headers)
+
+        # add a pause here to control the rate of API invocation
+        time.sleep(1)
+        if response.status_code != 200:
+            print(
+                f"An error has occurred when fetching preview data for {user_id}. Status code: {response.status_code}")
+            return False
+        else:
+            preview_data_holder = self.process(response.json())
+            if len(preview_data_holder.get_preview_header()) > 0:
+                # here, you can either put the data in a csv file, or if it's in service mode
+                # then send it to the ingestion service to store in the database
+
+                # here, we will just get the expanded rows (individual days)
+                print("===================")
+                for p1 in preview_data_holder.get_preview_header():
+                    print("Tour Header : " + p1.generate_record())
+                for p2 in preview_data_holder.get_preview_collapsed_lines():
+                    print("collapsed : " + p2.generate_record())
+                for p in preview_data_holder.get_preview_expanded_lines():
+                    print("expanded : " + p.generate_record())
+                print("===================")
+                return True
+            else:
+                print(f"[INFO] No preview data found for {user_id}")
+                return False
+
+
+    def load_preview_by_user_id(self, user_id):
+        existing_user_id_list = [line.rstrip("\n") for line in
+                                 self.read_user_ids_from_temp_feedback_file("preview", False)]
+        if user_id is not None and user_id not in existing_user_id_list:
+            result = self.extract_preview_data(user_id)
+            if result:
+                self.update_temp_file(user_id, False, "preview")
+
     # This function is for reading off a user id list for the day
-    def execute(self):
+    def load_preview_data(self):
         user_profiles = self.read_profile_urls_from_userlist_temp_file()
         if len(user_profiles) > 0:
             # get the list of user_ids that have previews already downloaded for the day
             existing_user_id_list = [line.rstrip("\n") for line in
-                                            self.read_user_ids_from_temp_feedback_file("preview", False)]
+                                     self.read_user_ids_from_temp_feedback_file("preview", False)]
 
             # then go through each user id and fetch the data
             for user_profile in user_profiles:
                 user_id = self.extractUserId(user_profile)
                 if user_id is not None and user_id not in existing_user_id_list:
-
-                    headers = {"Content-Type": "application/json",
-                               "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
-
-                    response = requests.get(
-                        f"{self.propertyManager.getApiProviderUrl()}/api/Content/Tour/{user_id}?v=2", headers=headers)
-
-                    # add a pause here to control the rate of API invocation
-                    time.sleep(1)
-                    if response.status_code != 200:
-                        print(
-                            f"An error has occurred when fetching preview data for {user_id}. Status code: {response.status_code}")
-                    else:
-                        preview_data_holder = self.load(response.json())
-                        if len(preview_data_holder.get_preview_header()) > 0:
-                            # here, you can either put the data in a csv file, or if it's in service mode
-                            # then send it to the ingestion service to store in the database
-
-                            # here, we will just get the expanded rows (individual days)
-                            print("===================")
-                            for p1 in preview_data_holder.get_preview_header():
-                                print("Tour Header : " + p1.generate_record())
-                            for p2 in preview_data_holder.get_preview_collapsed_lines():
-                                print("collapsed : " + p2.generate_record())
-                            for p in preview_data_holder.get_preview_expanded_lines():
-                                print("expanded : "+ p.generate_record())
-                            print("===================")
-
-                            # if successful, then update the temp list for preview files, so the same user data is not
-                            # downloaded again
-                            self.update_temp_file(user_id, False, "preview")
-                            pass
-                        else:
-                            print(f"[INFO] No preview data found for {user_id}")
+                    result = self.extract_preview_data(user_id)
+                    # if successful, then update the temp list for preview files, so the same user data is not
+                    # downloaded again
+                    if result:
+                        self.update_temp_file(user_id, False, "preview")
+                        pass

@@ -193,7 +193,7 @@ try:
             order_loader.show_orders()
         elif sys.argv[1] == "load-previews":
             preview_loader = PhoenixPreviewFetcher(propertyManager, False)
-            preview_loader.execute()
+            preview_loader.load_preview_data()
         else:
             connector.start()
             print("[INFO] Connect to service provider and generate feed file")
