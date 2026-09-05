@@ -11,6 +11,7 @@ from PathController import PathController
 from PhoenixServiceReportV2Loader import PhoenixServiceReportV2Loader
 from PhoenixFeedbackV2Loader import PhoenixFeedbackV2Loader
 from loader.PhoenixOrderLoader import PhoenixOrderLoader
+from PhoenixPreviewFetcher import PhoenixPreviewFetcher
 from util.PhoenixUtil import PhoenixUtil
 from util.PropertyFileReader import PropertyFileReader
 from model.PropertyManager import PropertyManager
@@ -190,6 +191,9 @@ try:
         elif sys.argv[1] == "show-orders":
             order_loader = PhoenixOrderLoader(propertyManager)
             order_loader.show_orders()
+        elif sys.argv[1] == "load-previews":
+            preview_loader = PhoenixPreviewFetcher(propertyManager)
+            preview_loader.execute()
         else:
             connector.start()
             print("[INFO] Connect to service provider and generate feed file")
