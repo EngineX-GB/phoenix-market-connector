@@ -93,11 +93,23 @@ def run_load_by_region(regionid: str):
 def run_feedback_load():
     return system_controller.run_load("feedback", None)
 
+
 @app.post("/load/feedbackv2")
 def run_feedbackv2_load(userIds: list[str]):
     return system_controller.run_feedbackv2_load(userIds)
 
+
+def env_dump():
+    print("")
+    print(f"Environment: {propertyManager.getEnvironment()}")
+    print(f"Ingestion Endpoint : {propertyManager.getIngestionServiceEndpoint()}")
+    print(f"Client Endpoint : {propertyManager.getClientServiceEndpoint()}")
+    print("")
+
+
 if __name__ == "__main__":
+    print("")
     print(f"Running Phoenix Market Connector Service for {PhoenixIOUtil.get_os_name()}")
+    env_dump()
     multiprocessing.freeze_support()
-    uvicorn.run("service-runner:app", host="127.0.0.1", port=8001)
+    uvicorn.run("service-runner:app", host=propertyManager.getServiceHost(), port=propertyManager.getServicePort())

@@ -96,6 +96,10 @@ class PhoenixPreviewFetcher(PhoenixAbstractV2DataLoader):
                 for p in preview_data_holder.get_preview_expanded_lines():
                     print("expanded : " + p.generate_record())
                 print("===================")
+
+                # 12-10-26: Here, if there is data in the holder object, then push this through via
+                # REST to the ingestion service
+
                 return True
             else:
                 print(f"[INFO] No preview data found for {user_id}")

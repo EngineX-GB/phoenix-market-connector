@@ -194,11 +194,11 @@ class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
     def load_by_userId (self, userIds: list[str]):
         print("[INFO] Running load function for fetching feedback-v2 in service mode")
         if self.isServiceMode:
-            ClientService.send_notification("update", "load", "OK", "Loading feedback for assets started")
+            ClientService.send_notification(self.propertyManager.getClientServiceEndpoint(), "update", "load", "OK", "Loading feedback for assets started")
         for userId in userIds:
             self.load(userId, False)
         if self.isServiceMode:
-            ClientService.send_notification("update", "load", "OK", "Loading feedback for assets completed")
+            ClientService.send_notification(self.propertyManager.getClientServiceEndpoint(),"update", "load", "OK", "Loading feedback for assets completed")
 
 
     # TODO: Consider putting this in a persistence class for feedbackv2

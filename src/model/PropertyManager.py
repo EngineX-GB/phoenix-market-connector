@@ -1,3 +1,6 @@
+import os
+
+
 class PropertyManager:
 
     def __init__(self, propertyFileReader):
@@ -19,8 +22,12 @@ class PropertyManager:
         self.feedsFeedbackV2Directory = propertyFileReader.get("feeds.feedback.v2.directory")
         self.feedsServiceReportsV2Directory = propertyFileReader.get("feeds.service.reports.v2.directory")
         self.feedsFeedbackEpgDirectory = propertyFileReader.get("feeds.feedback.epg.directory")
-        self.ingestionServiceEndpoint = propertyFileReader.get("ingestion.service.endpoint")
+        self.ingestionServiceEndpoint = propertyFileReader.get("ingestion.service.endpoint") if (os.getenv("INGESTION_SERVICE_ENDPOINT") is None) else str(os.getenv("INGESTION_SERVICE_ENDPOINT"))
+        self.clientServiceEndpoint = propertyFileReader.get("client.service.endpoint") if (os.getenv("CLIENT_SERVICE_ENDPOINT") is None) else str(os.getenv("CLIENT_SERVICE_ENDPOINT"))
         self.apiCred = propertyFileReader.get("api.cred")
+        self.environment = "PROD" if (os.getenv("ENV") is None) else str(os.getenv("ENV"))
+        self.service_port = 8001 if (os.getenv("SERVICE_PORT") is None) else int(os.getenv("SERVICE_PORT"))
+        self.service_host = "127.0.0.1" if (os.getenv("SERVICE_HOST") is None) else str(os.getenv("SERVICE_HOST"))
 
     def getProviderUrl(self):
         return self.providerUrl
@@ -70,6 +77,9 @@ class PropertyManager:
     def getIngestionServiceEndpoint(self):
         return self.ingestionServiceEndpoint
 
+    def getClientServiceEndpoint(self):
+        return self.clientServiceEndpoint
+
     def getApiProviderUrl(self):
         return self.apiProviderUrl
 
@@ -81,3 +91,12 @@ class PropertyManager:
 
     def getApiHeadersJsonPath(self):
         return self.apiHeadersJsonFilePath
+
+    def getServicePort(self):
+        return self.service_port
+
+    def getServiceHost(self):
+        return self.service_host
+
+    def getEnvironment(self):
+        return self.environment
