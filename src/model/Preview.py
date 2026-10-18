@@ -28,7 +28,7 @@ class Preview:
         return self.business_key
 
     def generate_record(self):
-        return self.user_id + "|" + self.title + "|" + self.details + "|" + self.start_date + "|" + self.end_date + "|" + self.business_key
+        return self.user_id + "|" + self.title + "|" + self.details.replace("\r\n", "\n").replace("\r", "\n").replace("\n", r"\n") + "|" + self.start_date + "|" + self.end_date + "|" + self.is_active + "|" + self.business_key
 
 
 class PreviewCollapsedLine:
@@ -46,7 +46,7 @@ class PreviewCollapsedLine:
         self.business_key = business_key
 
     def generate_record(self):
-        return self.user_id + "|" + self.country + "|" + self.region + "|" + self.county + "|" + self.town + "|" + self.postcode + "|" + self.details + "|" + self.start_date + "|" + self.end_date + "|" + self.business_key
+        return self.user_id + "|" + self.country + "|" + self.region + "|" + self.county + "|" + self.town + "|" + self.postcode + "|" + self.details.replace("\r\n", "\n").replace("\r", "\n").replace("\n", r"\n") + "|" + self.start_date + "|" + self.end_date + "|" + self.business_key
 
     def get_user_id(self):
         return self.user_id
@@ -93,7 +93,7 @@ class PreviewExpandedLine:
         self.business_key = business_key
 
     def generate_record(self):
-        return self.user_id + "|" + self.country + "|" + self.region + "|" + self.county + "|" + self.town + "|" + self.postcode + "|" + self.details + "|" + self.availability_date + "|" + self.business_key
+        return self.user_id + "|" + self.country + "|" + self.region + "|" + self.county + "|" + self.town + "|" + self.postcode + "|" + self.details.replace("\r\n", "\n").replace("\r", "\n").replace("\n", r"\n") + "|" + self.availability_date + "|" + self.business_key
 
     def get_user_id(self):
         return self.user_id

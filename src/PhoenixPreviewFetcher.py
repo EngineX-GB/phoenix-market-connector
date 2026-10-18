@@ -87,24 +87,50 @@ class PhoenixPreviewFetcher(PhoenixAbstractV2DataLoader):
                 # here, you can either put the data in a csv file, or if it's in service mode
                 # then send it to the ingestion service to store in the database
 
+                preview_headers_records = []
+                preview_data_records = []
+
                 # here, we will just get the expanded rows (individual days)
                 print("===================")
                 for p1 in preview_data_holder.get_preview_header():
                     print("Tour Header : " + p1.generate_record())
+                    preview_headers_records.append(p1.generate_record())
                 for p2 in preview_data_holder.get_preview_collapsed_lines():
                     print("collapsed : " + p2.generate_record())
                 for p in preview_data_holder.get_preview_expanded_lines():
                     print("expanded : " + p.generate_record())
+                    preview_data_records.append(p.generate_record())
                 print("===================")
 
                 # 12-10-26: Here, if there is data in the holder object, then push this through via
                 # REST to the ingestion service
 
+                preview_headers_records_json = json.dumps(preview_headers_records)
+                preview_data_records_json = json.dumps(preview_data_records)
+
+
+                # send the preview headers
+                print(f"Publishing {len(preview_headers_records)} preview headers for user {user_id} to Ingestion")
+                response_preview_headers = requests.post(
+                    url=f"{self.propertyManager.getIngestionServiceEndpoint()}/preview/headers",
+                    data=preview_headers_records_json)
+                if response_preview_headers.status_code != 200:
+                    print(f"An error has occurred when trying to publish preview headers to Ingestion. "
+                          f"Status code : {response_preview_headers.status_code}")
+
+                # send the preview data
+                print(f"Publishing {len(preview_data_records)} preview data for user {user_id} to Ingestion")
+                response_preview_data = requests.post(
+                    url=f"{self.propertyManager.getIngestionServiceEndpoint()}/preview/data",
+                    data=preview_data_records_json)
+                if response_preview_headers.status_code != 200:
+                    print(f"An error has occurred when trying to publish preview data to Ingestion. "
+                          f"Status code : {response_preview_data.status_code}")
+
                 return True
             else:
                 print(f"[INFO] No preview data found for {user_id}")
                 return False
-
 
     def load_preview_by_user_id(self, user_id):
         existing_user_id_list = [line.rstrip("\n") for line in
