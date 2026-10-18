@@ -202,7 +202,7 @@ class PhoenixMobileConnector:
     def main(self, region):
         print("[INFO] Retrieving data for Region " + str(region))
         if self.isServiceMode:
-            ClientService.send_notification("update", "load", "OK", f"Loading region {region} has started")
+            ClientService.send_notification(self.propertyManager.getClientServiceEndpoint(), "update", "load", "OK", f"Loading region {region} has started")
 
         # page 0 (i.e page 1)
         requestPayload = self.propertyManager.getRequestPayload().replace("${region.id}", region)
@@ -224,7 +224,7 @@ class PhoenixMobileConnector:
                     # todo: =========
                     pageNumber+=1
             if self.isServiceMode:
-                ClientService.send_notification("update", "load-region",
+                ClientService.send_notification(self.propertyManager.getClientServiceEndpoint(), "update", "load-region",
                                                 "OK", f"Loading Region {region} is complete.")
             print("[INFO] Completed")
 
