@@ -10,6 +10,8 @@ from model.PropertyManager import PropertyManager
 from persistence.PersistenceNET import PersistenceNET
 from core.SystemController import SystemController
 from loader.PhoenixFeedbackFetcher import PhoenixFeedbackFetcher
+from PhoenixFeedbackV2Loader import PhoenixFeedbackV2Loader
+from util.PhoenixIOUtil import PhoenixIOUtil
 from util.PropertyFileReader import PropertyFileReader
 
 
@@ -71,26 +73,47 @@ check_and_setup_default_properties()
 propertyFileReader = PropertyFileReader(".././properties/config.properties")
 propertyManager = PropertyManager(propertyFileReader)
 persistence = PersistenceNET(propertyManager)
-connector = PhoenixMobileConnector(propertyManager, persistence)
+connector = PhoenixMobileConnector(propertyManager, persistence, True)
 feedback_fetcher = PhoenixFeedbackFetcher(propertyManager)
-system_controller = SystemController(connector, feedback_fetcher)
+feedbackv2_loader = PhoenixFeedbackV2Loader(propertyManager, True)
+system_controller = SystemController(connector, feedback_fetcher, feedbackv2_loader)
 
 
 @app.get('/ping')
 def ping():
     return {"response": "pong"}
 
+@app.get("/configs")
+def get_service_configs():
+    return propertyManager.get_list_of_configs()
 
-@app.get('/load/region/{regionid}')
+
+@app.post('/load/region/{regionid}')
 def run_load_by_region(regionid: str):
     return system_controller.run_load("region", regionid)
 
 
-@app.get('/load/feedback')
+@app.post('/load/feedback')
 def run_feedback_load():
     return system_controller.run_load("feedback", None)
 
 
+@app.post("/load/feedbackv2")
+def run_feedbackv2_load(userIds: list[str]):
+    return system_controller.run_feedbackv2_load(userIds)
+
+
+def env_dump():
+    print("")
+    print(f"Environment: {propertyManager.getEnvironment()}")
+    print(f"Ingestion Endpoint : {propertyManager.getIngestionServiceEndpoint()}")
+    print(f"Client Endpoint : {propertyManager.getClientServiceEndpoint()}")
+    print("")
+
+
 if __name__ == "__main__":
+    print("")
+    print(f"Running Phoenix Market Connector Service for {PhoenixIOUtil.get_os_name()}")
+    env_dump()
     multiprocessing.freeze_support()
-    uvicorn.run("service-runner:app", host="127.0.0.1", port=8001)
+    uvicorn.run("service-runner:app", host=propertyManager.getServiceHost(), port=propertyManager.getServicePort())

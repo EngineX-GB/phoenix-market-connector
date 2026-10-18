@@ -1,0 +1,160 @@
+import json
+import time
+from datetime import datetime, timedelta
+
+import requests
+
+from PhoenixAbstractV2DataLoader import PhoenixAbstractV2DataLoader
+from model.Preview import Preview, PreviewCollapsedLine, PreviewDataHolder, PreviewExpandedLine
+
+
+class PhoenixPreviewFetcher(PhoenixAbstractV2DataLoader):
+
+    def __init__(self, propertyManager, service_mode: bool):
+        super().__init__()
+        self.propertyManager = propertyManager
+        self.service_mode = service_mode
+
+    def process(self, data):
+        preview_headers = []
+        preview_collapsed_lines = []
+        preview_expanded_lines = []
+        results = data["Result"]
+        for result in results:
+            user_id = result["userId"]
+            title = str(result["title"])
+            details = str(result["details"])
+            start_date = datetime.strptime(result["startDate"], "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
+            end_date = datetime.strptime(result["endDate"], "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
+            is_active = str(result["isActive"])
+            business_key = str(user_id) + "_" + start_date + "_" + end_date + "_" + str(is_active)
+
+            preview_headers.append(Preview(str(user_id), title, details, start_date,
+                                           end_date, str(is_active), business_key))
+
+            # get the number of stops on the preview
+            stops = result["stops"]
+            for stop in stops:
+                country = stop["country"]
+                region = stop["region"]
+                county = stop["county"]
+                town = stop["town"]
+                postcode = stop["postCode"]
+                details = str(stop["details"])
+                start_date = datetime.strptime(stop["startDate"], "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
+                end_date = datetime.strptime(stop["endDate"], "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
+
+                preview_collapsed_lines.append(PreviewCollapsedLine(str(user_id), country, region, county, town,
+                                                                    postcode, details, start_date, end_date,
+                                                                    business_key))
+
+            # now take the "collapsed" preview lines (with start date and end date) and break up the line to
+            # individual dates, where each line is a date of which the user is available within the start and end
+            # date range.
+
+            for line in preview_collapsed_lines:
+                _start_date = datetime.strptime(line.start_date, "%Y-%m-%d").date()
+                _end_date = datetime.strptime(line.end_date, "%Y-%m-%d").date()
+
+                _dates = []
+
+                while _start_date <= _end_date:
+                    preview_expanded_lines.append(
+                        PreviewExpandedLine(line.user_id, line.country, line.region, line.county,
+                                            line.town, line.postcode, line.details,
+                                            _start_date.strftime("%Y-%m-%d"),
+                                            line.business_key))
+                    _start_date += timedelta(days=1)
+
+        return PreviewDataHolder(preview_headers, preview_collapsed_lines, preview_expanded_lines)
+
+    def extract_preview_data(self, user_id: str):
+        headers = {"Content-Type": "application/json",
+                   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"}
+
+        response = requests.get(
+            f"{self.propertyManager.getApiProviderUrl()}/api/Content/Tour/{user_id}?v=2", headers=headers)
+
+        # add a pause here to control the rate of API invocation
+        time.sleep(1)
+        if response.status_code != 200:
+            print(
+                f"An error has occurred when fetching preview data for {user_id}. Status code: {response.status_code}")
+            return False
+        else:
+            preview_data_holder = self.process(response.json())
+            if len(preview_data_holder.get_preview_header()) > 0:
+                # here, you can either put the data in a csv file, or if it's in service mode
+                # then send it to the ingestion service to store in the database
+
+                preview_headers_records = []
+                preview_data_records = []
+
+                # here, we will just get the expanded rows (individual days)
+                print("===================")
+                for p1 in preview_data_holder.get_preview_header():
+                    print("Tour Header : " + p1.generate_record())
+                    preview_headers_records.append(p1.generate_record())
+                for p2 in preview_data_holder.get_preview_collapsed_lines():
+                    print("collapsed : " + p2.generate_record())
+                for p in preview_data_holder.get_preview_expanded_lines():
+                    print("expanded : " + p.generate_record())
+                    preview_data_records.append(p.generate_record())
+                print("===================")
+
+                # 12-10-26: Here, if there is data in the holder object, then push this through via
+                # REST to the ingestion service
+
+                preview_headers_records_json = json.dumps(preview_headers_records)
+                preview_data_records_json = json.dumps(preview_data_records)
+
+
+                # send the preview headers
+                print(f"Publishing {len(preview_headers_records)} preview headers for user {user_id} to Ingestion")
+                response_preview_headers = requests.post(
+                    url=f"{self.propertyManager.getIngestionServiceEndpoint()}/preview/headers",
+                    data=preview_headers_records_json)
+                if response_preview_headers.status_code != 200:
+                    print(f"An error has occurred when trying to publish preview headers to Ingestion. "
+                          f"Status code : {response_preview_headers.status_code}")
+
+                # send the preview data
+                print(f"Publishing {len(preview_data_records)} preview data for user {user_id} to Ingestion")
+                response_preview_data = requests.post(
+                    url=f"{self.propertyManager.getIngestionServiceEndpoint()}/preview/data",
+                    data=preview_data_records_json)
+                if response_preview_headers.status_code != 200:
+                    print(f"An error has occurred when trying to publish preview data to Ingestion. "
+                          f"Status code : {response_preview_data.status_code}")
+
+                return True
+            else:
+                print(f"[INFO] No preview data found for {user_id}")
+                return False
+
+    def load_preview_by_user_id(self, user_id):
+        existing_user_id_list = [line.rstrip("\n") for line in
+                                 self.read_user_ids_from_temp_feedback_file("preview", False)]
+        if user_id is not None and user_id not in existing_user_id_list:
+            result = self.extract_preview_data(user_id)
+            if result:
+                self.update_temp_file(user_id, False, "preview")
+
+    # This function is for reading off a user id list for the day
+    def load_preview_data(self):
+        user_profiles = self.read_profile_urls_from_userlist_temp_file()
+        if len(user_profiles) > 0:
+            # get the list of user_ids that have previews already downloaded for the day
+            existing_user_id_list = [line.rstrip("\n") for line in
+                                     self.read_user_ids_from_temp_feedback_file("preview", False)]
+
+            # then go through each user id and fetch the data
+            for user_profile in user_profiles:
+                user_id = self.extractUserId(user_profile)
+                if user_id is not None and user_id not in existing_user_id_list:
+                    result = self.extract_preview_data(user_id)
+                    # if successful, then update the temp list for preview files, so the same user data is not
+                    # downloaded again
+                    if result:
+                        self.update_temp_file(user_id, False, "preview")
+                        pass

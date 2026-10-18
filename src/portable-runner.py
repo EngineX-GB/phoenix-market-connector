@@ -11,6 +11,7 @@ from PathController import PathController
 from PhoenixServiceReportV2Loader import PhoenixServiceReportV2Loader
 from PhoenixFeedbackV2Loader import PhoenixFeedbackV2Loader
 from loader.PhoenixOrderLoader import PhoenixOrderLoader
+from PhoenixPreviewFetcher import PhoenixPreviewFetcher
 from util.PhoenixUtil import PhoenixUtil
 from util.PropertyFileReader import PropertyFileReader
 from model.PropertyManager import PropertyManager
@@ -86,7 +87,7 @@ check_and_setup_default_properties()
 propertyFileReader = PropertyFileReader(".././properties/config.properties")
 propertyManager = PropertyManager(propertyFileReader)
 persistence = PersistenceIO(propertyManager)
-connector = PhoenixMobileConnector(propertyManager, persistence)
+connector = PhoenixMobileConnector(propertyManager, persistence, False)
 
 
 # initialise some basic things that need to exist before starting.
@@ -161,7 +162,7 @@ try:
             serviceReportLoader = PhoenixServiceReportV2Loader(propertyManager)
             serviceReportLoader.execute([sys.argv[2]])
         elif sys.argv[1] == "feedbackv2":
-            feedbackV2Loader = PhoenixFeedbackV2Loader(propertyManager)
+            feedbackV2Loader = PhoenixFeedbackV2Loader(propertyManager, False)
             feedbackV2Loader.execute([sys.argv[2]])
         elif sys.argv[1] == "feedback":
             feedbackFetcher = PhoenixFeedbackFetcher(propertyManager)
@@ -190,6 +191,9 @@ try:
         elif sys.argv[1] == "show-orders":
             order_loader = PhoenixOrderLoader(propertyManager)
             order_loader.show_orders()
+        elif sys.argv[1] == "load-previews":
+            preview_loader = PhoenixPreviewFetcher(propertyManager, False)
+            preview_loader.load_preview_data()
         else:
             connector.start()
             print("[INFO] Connect to service provider and generate feed file")
