@@ -83,6 +83,10 @@ system_controller = SystemController(connector, feedback_fetcher, feedbackv2_loa
 def ping():
     return {"response": "pong"}
 
+@app.get("/configs")
+def get_service_configs():
+    return propertyManager.get_list_of_configs()
+
 
 @app.post('/load/region/{regionid}')
 def run_load_by_region(regionid: str):

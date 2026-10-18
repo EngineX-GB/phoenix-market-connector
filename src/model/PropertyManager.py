@@ -100,3 +100,10 @@ class PropertyManager:
 
     def getEnvironment(self):
         return self.environment
+
+    def get_list_of_configs(self):
+        return {
+            "environment" : self.environment,
+            "client.service.endpoint" : self.clientServiceEndpoint,
+            "ingestion.service.endpoint" : self.ingestionServiceEndpoint
+        }
