@@ -181,3 +181,9 @@ Note that the physical to emulated device is mapped as following:
 
 Then you can run:
 `cd /storage/dcim/phoenix-market-connector`
+
+
+
+For full list of pip dependencies and versions:
+
+`pip list`

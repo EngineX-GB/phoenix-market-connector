@@ -9,10 +9,9 @@
 set "found=false"
 set TAG_VERSION=%1
 set WIN_DISTRO_FILE=%2
-set LINUX_DISTRO_FILE=%3
-set PORTABLE_DISTRO_FILE=%4
-set RELEASE_NOTES=%5
-set RELEASE_TITLE=%6
+set PORTABLE_DISTRO_FILE=%3
+set RELEASE_NOTES=%4
+set RELEASE_TITLE=%5
 
 set "CONFIG_FILE=scm-config.properties"
 if not exist "%CONFIG_FILE%" (
@@ -24,12 +23,6 @@ if not exist "%WIN_DISTRO_FILE%" (
     echo ERROR: "%WIN_DISTRO_FILE%" does not exist. Please make sure it exists. Aborting release.
     goto :EOF
 )
-
-if not exist "%LINUX_DISTRO_FILE%" (
-    echo ERROR: "%LINUX_DISTRO_FILE%" does not exist. Please make sure it exists. Aborting release.
-    goto :EOF
-)
-
 
 if not exist "%PORTABLE_DISTRO_FILE%" (
     echo ERROR: "%PORTABLE_DISTRO_FILE%" does not exist. Please make sure it exists. Aborting release.
@@ -55,7 +48,7 @@ for /f "delims=" %%A in ('gh --version') do (
 if "%found%"=="true" (
     echo Connect to Github CLI and releasing artefact
     :: Removed the gh auth login statement to see if it's needed is we are setting credentials in memory
-    gh release create %TAG_VERSION% %WIN_DISTRO_FILE% %LINUX_DISTRO_FILE% %PORTABLE_DISTRO_FILE% --notes %RELEASE_NOTES% -t %RELEASE_TITLE%
+    gh release create %TAG_VERSION% %WIN_DISTRO_FILE% %PORTABLE_DISTRO_FILE% --notes %RELEASE_NOTES% -t %RELEASE_TITLE%
 ) else (
     echo Could not detect Github CLI on build machine.
 )

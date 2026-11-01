@@ -1,5 +1,17 @@
 @echo off
 
+call .././setenv.bat
+
+if not exist "%GIT_BIN%" (
+    echo ERROR: "%GIT_BIN%" does not exist. Please make sure it exists. Aborting release.
+    goto :EOF
+)
+
+if not exist "%GITHUB_CLI_BIN%" (
+    echo ERROR: "%GITHUB_CLI_BIN%" does not exist. Please make sure it exists. Aborting release.
+    goto :EOF
+)
+
 set /p version=<distro/version.txt
 
 set "APPLICATION_NAME=phoenix-market-connector"
@@ -27,14 +39,12 @@ rem publish artefacts
 
 set "BASE_DIR=%~dp0"
 set "WINDOWS_ZIP=%BASE_DIR%distro\%APPLICATION_NAME%-windows_%version%.zip"
-set "LINUX_ZIP=%BASE_DIR%distro\%APPLICATION_NAME%-linux_%version%.zip"
 set "PORTABLE_ZIP=%BASE_DIR%distro\%APPLICATION_NAME%_%version%.zip"
 set "RELEASE_NOTES=Release %version%"
 
 call deploy.bat ^
     %version% ^
     "%WINDOWS_ZIP%" ^
-    "%LINUX_ZIP%" ^
     "%PORTABLE_ZIP%" ^
     "%RELEASE_NOTES%" ^
     "%RELEASE_NOTES%"

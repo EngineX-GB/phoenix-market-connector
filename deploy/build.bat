@@ -6,9 +6,28 @@ rem Git/ Git Bash needs to be set to the PATH environment variable for this scri
 
 call .././setenv.bat
 
+if not exist "%PYTHON_HOME%" (
+    echo ERROR: "%PYTHON_HOME%" does not exist. Please make sure it exists. Aborting release.
+    goto :EOF
+)
+
 rem -- delete old build files
-rmdir /s /q build
-rmdir /s /q dist
+rmdir /s /q build 2>nul
+rmdir /s /q dist 2>nul
+
+echo "Install dependencies"
+
+pip install beautifulsoup4==4.12.3 --no-input
+pip install requests==2.31.0 --no-input
+pip install cloudscraper==1.2.71 --no-input
+pip install uvicorn==0.35.0 --no-input
+pip install fastapi==0.116.1 --no-input
+pip install fastapi-cli==0.0.8 --no-input
+pip install fastapi-cloud-cli==0.1.5 --no-input
+pip install python-multipart==0.0.20 --no-input
+pip install pyinstaller==6.15.0 --no-input
+pip install pyinstaller-hooks-contrib==2025.8 --no-input
+
 
 rem -- version the code
 python job_versioning.py --appDirectory .././src
