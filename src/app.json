@@ -1,6 +1,6 @@
 {
     "application": "phoenix-market-connector",
-    "version": "3.0.35",
+    "version": "4.0.0",
     "date": "2026-11-08",
     "changeset": [
         "2022-11-27 | Adding app.json and application details parameter",
