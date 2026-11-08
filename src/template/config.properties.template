@@ -16,5 +16,8 @@ ukp.user.profile.url=https://{ukp.domain.name}/index.php?action=serviceprovider;
 static.directory=.././app-data/static
 reports.directory=.././app-data/reports
 ingestion.service.endpoint=http://localhost:8000
+client.service.endpoint=http://localhost:8081
 api.headers.json.file.path=.././properties/api.headers.json
 api.cred=908abffe4ad0917b735432b5ce14ab64
+request.payload.facetby=2lvl.snoitacoLlacol,1lvl.snoitacoLlacol,0lvl.snoitacoLlacol,ruoHowt.setaRllaCni,ruoHretrauQeerht.setaRllaCni,ruoHeerht.setaRllaCni,ruoHretrauq.setaRllaCni,thginrevo.setaRllaCni,flaHruoh.setaRllaCni,ruoh.setaRllaCni,ruoHflah.setaRllaCni,ruoHruof.setaRllaCni,rebmuNenohPsah,redneg,ytilibaliavAyad,yadoTelbaliava
+request.payload.filterby=]`}noiger{ > modgnik-detinu`[=:1lvl.snoitacoLlacol && ]`nemoW`[=:eMwohs && ]eurt[=:yadoTelbaliava && ]`)etadommoccA+naC(+sllaC+nI`[=:sreffOtrocse && ]nemoW[=:eMwohs&&]dtom,hcraeSlacol,derutaef[=:derutaeFhcraeSlacoLsItrocse&&eurt:trocsEsi&&]851[=!:sdIyrtnuoCdennab

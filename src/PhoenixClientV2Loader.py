@@ -15,13 +15,13 @@ class PhoenixClientV2Loader:
             "per_page": 48,
             "infix": "fallback",
             "query_by": "nickname, gender, enjoys, ethnicity, nationality, orientation",
-            "include_fields": "acceptsSMS,allowRatings,acceptsWithheldCalls,accolades,age,avatarImageUrl,availableToday,country,county,disputes,escortIsFeatured,escortPriority,gender,hasTattoosOrPiercings,hideOnMap,localLocations,id,imageUrl,imageUrlGuest,imageBlurUrl,imageBlurUrlGuest,avatarImageBlurUrl,isBrandAmbassador,isContent,isDirectCam,isDirectCamOnline,isTrans,isVip,mainImageUrls,memberOfTheDayType,nationality,nickname,orientation,ratings,region,summary,town,userId,_geoloc",
+            "include_fields": "availableToday,country,county,id,region,userId",
             "sort_by": "escortPriority:desc,schemaId:asc",
             "highlight_full_fields": "nickname, gender, enjoys, ethnicity, nationality, orientation",
             "collection": "ProfileSearch",
             "q": "*",
-            "facet_by": "allowRatings,availableToday,bodyType,breasts,bustSize,dayAvailability,dislikes,dressSize,enjoys,escortIsFeatured,escortOffers,excludeNationality,gender,hairColour,hasPhoneNumber,inBreaks,inCallRates.fourHour,inCallRates.halfHour,inCallRates.hour,inCallRates.hourHalf,inCallRates.overnight,inCallRates.quarterHour,inCallRates.threeHour,inCallRates.threeQuarterHour,inCallRates.twoHour,isDirectCamOnline,isVip,lastLoginGrouping,localLocations.lvl0,localLocations.lvl1,localLocations.lvl2,nationality,orientation,outBreaks,outCallRates.fourHour,outCallRates.halfHour,outCallRates.hour,outCallRates.hourHalf,outCallRates.overnight,outCallRates.quarterHour,outCallRates.threeHour,outCallRates.threeQuarterHour,outCallRates.twoHour,profileOffers,showMe,soloAndCouples,tattoosOrPiercingsGrouping,tattoosOrPiercingsVisibilityGrouping,withGenders",
-            "filter_by": "bannedCountryIds:!=[158]&&isEscort:true&&escortIsLocalSearchFeatured:=[featured,localSearch,motd]&&showMe:=[Women] && escortOffers:=[`In+Calls+(Can+Accommodate)`] && availableToday:=[true] && showMe:=[`Women`] && localLocations.lvl1:=[`united-kingdom > " + region + "`]",
+            "facet_by": self.propertyManager.getRequestPayloadFacetBy(),
+            "filter_by": self.propertyManager.getRequestPayloadFilterBy().replace("{region}", region),
             "max_facet_values": 200,
             "page": page_number
         }]}
