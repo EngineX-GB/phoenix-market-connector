@@ -12,6 +12,7 @@ from PhoenixServiceReportV2Loader import PhoenixServiceReportV2Loader
 from PhoenixFeedbackV2Loader import PhoenixFeedbackV2Loader
 from loader.PhoenixOrderLoader import PhoenixOrderLoader
 from PhoenixPreviewFetcher import PhoenixPreviewFetcher
+from PhoenixClientV2Loader import PhoenixClientV2Loader
 from util.PhoenixUtil import PhoenixUtil
 from util.PropertyFileReader import PropertyFileReader
 from model.PropertyManager import PropertyManager
@@ -68,6 +69,14 @@ def create_default_properties(config_file_path: str, template_file_path: str, do
                 line = line.replace("request.payload.next=", "").strip()
                 r_line = line[::-1]
                 line = "request.payload.next=" + str(r_line) +"\n"
+            if line.startswith("request.payload.facetby="):
+                line = line.replace("request.payload.facetby=", "").strip()
+                r_line = line[::-1]
+                line = "request.payload.facetby=" + str(r_line) +"\n"
+            if line.startswith("request.payload.filterby="):
+                line = line.replace("request.payload.filterby=", "").strip()
+                r_line = line[::-1]
+                line = "request.payload.filterby=" + str(r_line) +"\n"
             if "\"cookie\":" in line:
                 line = line.replace("\"cookie\":", "").strip()
                 r_line = line[::-1]
@@ -118,6 +127,9 @@ try:
                 connector.processCustomUserSearch(userIdsList)
             else:
                 print("[ERROR] No user ids defined.")
+        elif sys.argv[1] == "get-london-list":
+            client_loader = PhoenixClientV2Loader(propertyManager)
+            client_loader.load("london")   # this is purely for testing purposes. To remove later
         elif sys.argv[1] == "region":
             if sys.argv[3] == "page":
                 connector.start()

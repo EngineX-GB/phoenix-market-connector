@@ -1,3 +1,4 @@
+import warnings
 
 # PHOENIX MOBILE CONNECTOR 2.0.0
 #
@@ -27,6 +28,8 @@ from PathController import PathController
 
 from service.ClientService import ClientService
 
+from PhoenixClientV2Loader import PhoenixClientV2Loader
+
 
 class PhoenixMobileConnector:
 
@@ -43,7 +46,21 @@ class PhoenixMobileConnector:
         r = requests.post(self.propertyManager.getProviderUrl() + "/search.asp", data=payload, headers=headers)
         return r
 
+
+    def extractUserProfile(self, user_id_set : set) -> list[str]:
+        user_profile_pages = []
+        for userid in user_id_set:
+            user_profile_pages.append(self.propertyManager.getProviderUrl() + "/viewProfile.asp?userID=" + userid)
+        return user_profile_pages
+
+
+
+    # 2026-11-08 : This function will be deprecated
     def extractUserProfiles(self, content):
+        warnings.warn(
+            "extractUserProfiles() is deprecated. Use extractUserProfiles(set) instead.",
+            DeprecationWarning,
+            stacklevel=2)
         # contains the list of user IDs
         userIds = re.findall("sU\(([\(0-9\)]+)", content)
         user_profile_pages = []
@@ -61,12 +78,12 @@ class PhoenixMobileConnector:
                 pageSource = req.text
                 rec = self.readProfileData(pageSource, u)
                 if rec is None:
-                    print("[WARN] Identified NULL Client reference for [" + pageUrl+ "]")
+                    print("[WARN] Identified NULL Client reference for [" + pageUrl + "]")
                 else:
                     clientRecords.append(rec)
             return clientRecords
         except (KeyboardInterrupt, requests.exceptions.HTTPError, requests.exceptions.ConnectionError):
-            print("[WARN] Ending script due to interrupt signal....Records captured : "+str(len(clientRecords)))
+            print("[WARN] Ending script due to interrupt signal....Records captured : " + str(len(clientRecords)))
             self.persistence.save(clientRecords)
             # update the filter userid list
             urls = []
@@ -79,13 +96,13 @@ class PhoenixMobileConnector:
     def readProfileData(self, htmlSource, profileUrl):
         client = PhoenixClient()
         soup = BeautifulSoup(htmlSource, "html.parser")
-        nameNode = soup.find("span", {"itemprop" : "name"})
+        nameNode = soup.find("span", {"itemprop": "name"})
         if nameNode is not None:
             name = nameNode.text
-            isAvailableTodayNode = soup.find("td", {"style" : "font-weight: bold; color: green"})
+            isAvailableTodayNode = soup.find("td", {"style": "font-weight: bold; color: green"})
             if isAvailableTodayNode is not None and "Available Today" in isAvailableTodayNode.text:
-                print( "[" + isAvailableTodayNode.text + "]   " + name)
-                if soup.find("img", {"alt" : "Member Verified"}) is not None:
+                print("[" + isAvailableTodayNode.text + "]   " + name)
+                if soup.find("img", {"alt": "Member Verified"}) is not None:
                     client.verified = True
                 client.userName = name
                 userId = PhoenixUtil.extractUserId(profileUrl)
@@ -101,14 +118,14 @@ class PhoenixMobileConnector:
                             rating = res.group(1)
                             client.rating = rating
 
-                addressRegion = soup.find("td", {"itemprop":"addressRegion"})
+                addressRegion = soup.find("td", {"itemprop": "addressRegion"})
                 client.region = PhoenixUtil.checkNodeAndReturnValue(addressRegion, "text")
-                addressCountry = soup.find("td", {"itemprop":"addressCountry"})
-                addressLocality = soup.find("td", {"itemprop":"addressLocality"})
-                telephone = soup.find("b", {"itemprop" : "telephone"})
+                addressCountry = soup.find("td", {"itemprop": "addressCountry"})
+                addressLocality = soup.find("td", {"itemprop": "addressLocality"})
+                telephone = soup.find("b", {"itemprop": "telephone"})
                 client.location = PhoenixUtil.checkNodeAndReturnValue(addressLocality, "text")
                 client.telephone = PhoenixUtil.checkNodeAndReturnValue(telephone, "text")
-                gender = soup.find("td", {"itemprop":"gender"})   
+                gender = soup.find("td", {"itemprop": "gender"})
                 tdElements = soup.findAll("td")
 
                 for td in tdElements:
@@ -145,16 +162,16 @@ class PhoenixMobileConnector:
                 # 2025-07-27 code has been uncommented
 
                 preferenceList = []
-                preferencesNode = soup.find("div", {"id" : "dPref"})
+                preferencesNode = soup.find("div", {"id": "dPref"})
                 if preferencesNode is not None and preferencesNode.find("table") is not None:
                     tableNode = preferencesNode.find("table")
-                    preferenceElements = tableNode.findAll("td", {"class" : "Padded"})
+                    preferenceElements = tableNode.findAll("td", {"class": "Padded"})
                     for pref in preferenceElements:
                         preferenceList.append(pref.text)
                     client.preferenceList = json.dumps(preferenceList)
 
                 # get email
-                emailNode = soup.find("a", {"itemprop":"email"})
+                emailNode = soup.find("a", {"itemprop": "email"})
                 if emailNode is not None:
                     client.email = emailNode.text
 
@@ -200,57 +217,86 @@ class PhoenixMobileConnector:
         return statsMap
 
     def main(self, region):
+        useNewUserIdSearchLoader = True     # a flag to turn off the old user id loader.
         print("[INFO] Retrieving data for Region " + str(region))
         if self.isServiceMode:
-            ClientService.send_notification(self.propertyManager.getClientServiceEndpoint(), "update", "load", "OK", f"Loading region {region} has started")
+            ClientService.send_notification(self.propertyManager.getClientServiceEndpoint(), "update", "load", "OK",
+                                            f"Loading region {region} has started")
 
-        # page 0 (i.e page 1)
-        requestPayload = self.propertyManager.getRequestPayload().replace("${region.id}", region)
-        response = self.connectAndRetrieve(requestPayload)
-        if response is None:
-            print("[ERROR] - the response is null. Therefore, cannot process further")
+        # 2026-11-08: This block is the old code to read data from the webview.
+        # Now it is controlled by a boolean flag: userNewUserIdSearchLoader.
+        # if useNewUserIdSearchLoader = false, run the new loader to get today's list of user Ids.
+        # if useNewUserIdSearchLoader = true, then run the old loader - but as of 2026-11-07
+        # there is an issue with the old userid loader.
+        if not useNewUserIdSearchLoader:
+            # page 0 (i.e page 1)
+            requestPayload = self.propertyManager.getRequestPayload().replace("${region.id}", region)
+            response = self.connectAndRetrieve(requestPayload)
+            if response is None:
+                print("[ERROR] - the response is null. Therefore, cannot process further")
+            else:
+                res = response.text
+                # here, get the number of pages shown on the first search result page
+                totalNumberOfPages = self.extractNumberOfPagesInSearchResults(res, str(region))
+                self.processSearchResults(res)
+                if totalNumberOfPages > 1:
+                    for pageNumber in range(1, totalNumberOfPages):  # page 1 onwards (i.e page 2 onwards)
+                        print("[INFO] Loading page " + str(pageNumber) + " of " + str(
+                            totalNumberOfPages) + " for Region " + str(region))
+                        # todo: extract the following lines replace them using the extractPageData()
+                        newRequestPayload = self.propertyManager.getRequestPayloadNext().replace("${region.id}",
+                                                                                                 region).replace(
+                            "${page.number}", str(pageNumber))
+                        response = self.connectAndRetrieve(newRequestPayload)
+                        self.processSearchResults(response.text)
+                        # todo: =========
+                        pageNumber += 1
+                if self.isServiceMode:
+                    ClientService.send_notification(self.propertyManager.getClientServiceEndpoint(), "update",
+                                                    "load-region",
+                                                    "OK", f"Loading Region {region} is complete.")
+                print("[INFO] Completed")
         else:
-            res = response.text
-            # here, get the number of pages shown on the first search result page
-            totalNumberOfPages = self.extractNumberOfPagesInSearchResults(res, str(region))
-            self.processSearchResults(res)
-            if totalNumberOfPages > 1:
-                for pageNumber in range(1, totalNumberOfPages):     #page 1 onwards (i.e page 2 onwards)
-                    print("[INFO] Loading page " + str(pageNumber) + " of " + str(totalNumberOfPages) + " for Region " + str(region))
-                    # todo: extract the following lines replace them using the extractPageData()
-                    newRequestPayload = self.propertyManager.getRequestPayloadNext().replace("${region.id}", region).replace("${page.number}", str(pageNumber))     
-                    response = self.connectAndRetrieve(newRequestPayload)
-                    self.processSearchResults(response.text)
-                    # todo: =========
-                    pageNumber+=1
-            if self.isServiceMode:
-                ClientService.send_notification(self.propertyManager.getClientServiceEndpoint(), "update", "load-region",
-                                                "OK", f"Loading Region {region} is complete.")
+            regionString = PhoenixUtil.resolveRegionCode(region)
+            if regionString is not None:
+                clientLoader = PhoenixClientV2Loader(self.propertyManager)
+                user_id_set = clientLoader.load(regionString)
+                self.processDiscoveredUserIdList(user_id_set)
+                if self.isServiceMode:
+                    ClientService.send_notification(self.propertyManager.getClientServiceEndpoint(), "update",
+                                                    "load-region",
+                                                    "OK", f"Loading Region {region} is complete.")
+            else:
+                print(f"[ERROR] Region ID {region} is not valid. It must be either [1-12, 14]")
+                if self.isServiceMode:
+                    ClientService.send_notification(self.propertyManager.getClientServiceEndpoint(), "update",
+                                                    "load-region",
+                                                    "ERROR",
+                                                    f"Loading region {region} failed. Region ID {region} is not valid.")
             print("[INFO] Completed")
-
 
     # 0 = page 1
     # 1 = page 2
     # ..etc
     def extractPageData(self, region, pageNumber):
-        newRequestPayload = self.propertyManager.getRequestPayloadNext().replace("${region.id}", region).replace("${page.number}", str(pageNumber))     
+        newRequestPayload = self.propertyManager.getRequestPayloadNext().replace("${region.id}", region).replace(
+            "${page.number}", str(pageNumber))
         response = self.connectAndRetrieve(newRequestPayload)
         self.processSearchResults(response.text)
 
     def extractPageDataByPageRange(self, region, startPageNumber, endPageNumber):
-        endPageNumber = endPageNumber + 1 # upto and include the page number within the page range (have to add 1 to it)
+        endPageNumber = endPageNumber + 1  # upto and include the page number within the page range (have to add 1 to it)
         for pageNumber in range(startPageNumber, endPageNumber):
             print("Loading page " + str(pageNumber) + " of " + str(endPageNumber) + " for region " + region)
             self.extractPageData(region, pageNumber)
 
     def extractNumberOfPagesInSearchResults(self, text, region):
         numberOfPages = re.search("showing Page ([0-9]+) of ([0-9]+)", text)
-        print("[INFO] Number of pages for region "+ str(region) + ": " + numberOfPages.group(2))
+        print("[INFO] Number of pages for region " + str(region) + ": " + numberOfPages.group(2))
         return int(numberOfPages.group(2))
 
-
-    def processSearchResults(self, res):
-        userProfileList = self.extractUserProfiles(res)
+    def processDiscoveredUserIdList(self, user_id_set):
+        userProfileList = self.extractUserProfile(user_id_set)
         # here filter the list to only process user profiles that have NOT been processed already (for today)
         userProfileList = self.persistence.getOutstandingUserProfiles(userProfileList)
         # here invoke a method to loop through the profiles
@@ -262,10 +308,28 @@ class PhoenixMobileConnector:
         self.persistence.updateUserTempDataFile(userProfileList)
 
 
+    # 2026-11-08: This is to be depreciated/ or re-written/ updated
+    def processSearchResults(self, res):
+        warnings.warn(
+            "processSearchResults() is deprecated. Use processDiscoveredUserIdList() instead.",
+            DeprecationWarning,
+            stacklevel=2)
+        userProfileList = self.extractUserProfiles(res)
+        # here filter the list to only process user profiles that have NOT been processed already (for today)
+        userProfileList = self.persistence.getOutstandingUserProfiles(userProfileList)
+        # here invoke a method to loop through the profiles
+        records = self.getProfileDetails(userProfileList)
+        # generate the feed file
+        if len(records) > 0:
+            self.persistence.save(records)
+        # update the list of users that you've already downloaded data for
+        self.persistence.updateUserTempDataFile(userProfileList)
+
     '''
     This method is for taking in a list of userIds and checking to see if the users are
     available or not (i.e. custom data loads)
     '''
+
     def processCustomUserSearch(self, userIdList):
         # convert the list of userIds in the userIdList into a list of URLs
         userProfileList = []
@@ -300,5 +364,3 @@ class PhoenixMobileConnector:
             print("[INFO] Changeset: ")
             for entry in appConfig["changeset"]:
                 print("[INFO] " + entry)
-
-        
