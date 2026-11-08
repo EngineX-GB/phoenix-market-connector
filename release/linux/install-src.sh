@@ -68,6 +68,8 @@ if [ $1 = "--env-setup" ]; then
   pip install beautifulsoup4==4.12.3 --no-input
   pip install requests==2.31.0 --no-input
   pip install cloudscraper==1.2.71 --no-input
+  pip install pydantic==2.11.7 --no-input
+  pip install pydantic_core==2.33.2 --no-input
   echo "[INFO] Completed. Exiting."
   exit
 fi
