@@ -2,11 +2,12 @@ import re
 import datetime
 import json
 
+
 class PhoenixUtil:
 
     @staticmethod
     def extractUserId(text):
-        res = re.search("userID\\=([0-9]+)",  text)
+        res = re.search("userID\\=([0-9]+)", text)
         return res.group(1)
 
     @staticmethod
@@ -33,8 +34,8 @@ class PhoenixUtil:
     @staticmethod
     def convertHeight(txtHeight):
         heightDictionary = {
-            "3'8\"" : "1.15",
-            "4'0\"" : "1.22",
+            "3'8\"": "1.15",
+            "4'0\"": "1.22",
             "4'1\"": "1.25",
             "4'2\"": "1.27",
             "4'3\"": "1.30",
@@ -73,3 +74,23 @@ class PhoenixUtil:
             "7'0\"": "2.13"
         }
         return heightDictionary.get(txtHeight)
+
+    @staticmethod
+    def resolveRegionCode(regionId: int):
+        regions = {
+            "1": "london",
+            "2": "south-east",
+            "3": "south-west",
+            "4": "west-midlands",
+            "5": "north-west",
+            "6": "north-east",
+            "7": "yorkshire-&-the-humber",
+            "8": "east-midlands",
+            "9": "east-of-england-(anglia)",
+            "10": "scotland",
+            "11": "wales",
+            "12": "northern-ireland",
+            "14": "channel-island"
+        }
+        return regions[regionId]
+

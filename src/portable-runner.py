@@ -12,6 +12,7 @@ from PhoenixServiceReportV2Loader import PhoenixServiceReportV2Loader
 from PhoenixFeedbackV2Loader import PhoenixFeedbackV2Loader
 from loader.PhoenixOrderLoader import PhoenixOrderLoader
 from PhoenixPreviewFetcher import PhoenixPreviewFetcher
+from PhoenixClientV2Loader import PhoenixClientV2Loader
 from util.PhoenixUtil import PhoenixUtil
 from util.PropertyFileReader import PropertyFileReader
 from model.PropertyManager import PropertyManager
@@ -118,6 +119,9 @@ try:
                 connector.processCustomUserSearch(userIdsList)
             else:
                 print("[ERROR] No user ids defined.")
+        elif sys.argv[1] == "get-london-list":
+            client_loader = PhoenixClientV2Loader(propertyManager)
+            client_loader.load("london")   # this is purely for testing purposes. To remove later
         elif sys.argv[1] == "region":
             if sys.argv[3] == "page":
                 connector.start()
