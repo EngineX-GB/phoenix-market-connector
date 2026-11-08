@@ -218,7 +218,7 @@ class PhoenixMobileConnector:
 
     def main(self, region):
 
-        useNewUserIdSearchLoader = True
+        useNewUserIdSearchLoader = True     # a flag to turn off the old user id loader.
 
         print("[INFO] Retrieving data for Region " + str(region))
         if self.isServiceMode:
