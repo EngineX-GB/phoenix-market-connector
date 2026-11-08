@@ -38,7 +38,7 @@ class PhoenixClientV2Loader:
         final_user_id_set = set()
         max_number_of_pages = 30
         for i in range(1, max_number_of_pages):
-            print(f"[INFO] Reading data on page {i}")
+            print(f"[INFO] Reading/collecting user id data on page {i}")
             res = self.connect(i, region)
             if res.status_code == 200:
                 user_id_list = self.read_feed(res.json())
@@ -50,7 +50,7 @@ class PhoenixClientV2Loader:
             else:
                 print(f"[ERROR] Unable to fetch active user ids for loading. Status code : {res.status_code}")
                 break
-        print(f"[INFO] Final user_id list = {len(final_user_id_set)} for {region}")
+        print(f"[INFO] Number of user ids collected for {region} : {len(final_user_id_set)}")
         return final_user_id_set
 
     def read_feed(self, json_data):

@@ -92,5 +92,5 @@ class PhoenixUtil:
             "12": "northern-ireland",
             "14": "channel-island"
         }
-        return regions[regionId]
+        return regions.get(regionId)
 

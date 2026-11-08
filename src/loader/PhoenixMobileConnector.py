@@ -217,9 +217,7 @@ class PhoenixMobileConnector:
         return statsMap
 
     def main(self, region):
-
         useNewUserIdSearchLoader = True     # a flag to turn off the old user id loader.
-
         print("[INFO] Retrieving data for Region " + str(region))
         if self.isServiceMode:
             ClientService.send_notification(self.propertyManager.getClientServiceEndpoint(), "update", "load", "OK",
@@ -268,6 +266,13 @@ class PhoenixMobileConnector:
                     ClientService.send_notification(self.propertyManager.getClientServiceEndpoint(), "update",
                                                     "load-region",
                                                     "OK", f"Loading Region {region} is complete.")
+            else:
+                print(f"[ERROR] Region ID {region} is not valid. It must be either [1-12, 14]")
+                if self.isServiceMode:
+                    ClientService.send_notification(self.propertyManager.getClientServiceEndpoint(), "update",
+                                                    "load-region",
+                                                    "ERROR",
+                                                    f"Loading region {region} failed. Region ID {region} is not valid.")
             print("[INFO] Completed")
 
     # 0 = page 1

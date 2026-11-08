@@ -76,8 +76,8 @@ help_info() {
 	echo "sh .././run.sh --feedback --robomode"
 	echo "sh .././run.sh --feedback --userId <userId>"
 	echo "sh .././run.sh --feedback-data --f <Positive|Negative|FeedbackOnly|ALL> --userId <userId>"
-	echo "sh ../run.sh --regionx 1 --range 1 3"
-	echo "sh ../run.sh --regionx 1 --page 2"
+	echo "(deprecated) sh ../run.sh --regionx 1 --range 1 3"
+	echo "(deprecated)sh ../run.sh --regionx 1 --page 2"
 	echo "sh ../run.sh --chkdup <date (optional)>"
 	echo "sh ../run.sh --fixdup <date (optional)>"
 	echo "sh ../run.sh --chkdup-all"
@@ -180,9 +180,11 @@ elif [ $1 = '--all' ]
 elif [ $1 = '--region' ]
 	then python portable-runner.py $2
 elif [ $1 = '--regionx' ] && [ $3 = '--range' ]
-	then python portable-runner.py region $2 start $4 end $5
+	then echo "This operation is no longer supported"
+	# (deprecated) then python portable-runner.py region $2 start $4 end $5
 elif [ $1 = '--regionx' ] && [ $3 = '--page' ]
-	then python portable-runner.py region $2 page $4
+	then echo "This operation is no longer supported"
+  #	(deprecated) then python portable-runner.py region $2 page $4
 elif [ $1 = '--stats' ]
 	then python portable-runner.py stats
 elif [ $1 = '--watchlist' ]

@@ -1,7 +1,7 @@
 {
     "application": "phoenix-market-connector",
     "version": "3.0.35",
-    "date": "2026-11-01",
+    "date": "2026-11-08",
     "changeset": [
         "2022-11-27 | Adding app.json and application details parameter",
         "2022-11-29 | Enable page range downloading",
@@ -13,6 +13,7 @@
         "2026-02-13 | Fixed Media download to track/ skip previously downloaded data",
         "2026-02-13 | Added smart-loading mode for feedback-v2 downloading",
         "2026-02-13 | Added new shell script for processing feeds in the background",
-        "2026-02-14 | Added template for the image viewer page."
+        "2026-02-14 | Added template for the image viewer page.",
+        "2026-11-08 | Replaced user-id fetch (from html parsing) to using API"
     ]
 }
