@@ -17,6 +17,8 @@ rmdir /s /q dist 2>nul
 
 echo "Install dependencies"
 
+rem (you can run `pip list`)
+
 pip install beautifulsoup4==4.12.3 --no-input
 pip install requests==2.31.0 --no-input
 pip install cloudscraper==1.2.71 --no-input
@@ -27,6 +29,8 @@ pip install fastapi-cloud-cli==0.1.5 --no-input
 pip install python-multipart==0.0.20 --no-input
 pip install pyinstaller==6.15.0 --no-input
 pip install pyinstaller-hooks-contrib==2025.8 --no-input
+pip install pydantic==2.11.7 --no-input
+pip install pydantic_core==2.33.2 --no-input
 
 
 rem -- version the code
