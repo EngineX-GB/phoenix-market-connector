@@ -111,6 +111,10 @@ def run_feedbackv2_load(userIds: list[str]):
     return system_controller.run_feedbackv2_load(userIds)
 
 
+@app.get("/config")
+def get_config():
+    return propertyManager.get_list_of_configs()
+
 def env_dump():
     print("")
     print(f"Environment: {propertyManager.getEnvironment()}")
