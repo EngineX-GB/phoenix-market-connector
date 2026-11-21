@@ -56,11 +56,11 @@ def create_default_properties(config_file_path: str, template_file_path: str, do
             if line.startswith("request.payload.facetby="):
                 line = line.replace("request.payload.facetby=", "").strip()
                 r_line = line[::-1]
-                line = "request.payload.facetby=" + str(r_line) +"\n"
+                line = "request.payload.facetby=" + str(r_line) + "\n"
             if line.startswith("request.payload.filterby="):
                 line = line.replace("request.payload.filterby=", "").strip()
                 r_line = line[::-1]
-                line = "request.payload.filterby=" + str(r_line) +"\n"
+                line = "request.payload.filterby=" + str(r_line) + "\n"
             if "\"cookie\":" in line:
                 line = line.replace("\"cookie\":", "").strip()
                 r_line = line[::-1]
@@ -91,6 +91,7 @@ system_controller = SystemController(connector, feedback_fetcher, feedbackv2_loa
 def ping():
     return {"response": "pong"}
 
+
 @app.get("/configs")
 def get_service_configs():
     return propertyManager.get_list_of_configs()
@@ -106,14 +107,20 @@ def run_feedback_load():
     return system_controller.run_load("feedback", None)
 
 
-@app.post("/load/feedbackv2")
-def run_feedbackv2_load(userIds: list[str]):
-    return system_controller.run_feedbackv2_load(userIds)
+@app.post("/load/feedbackv2/recent")
+def run_feedbackv2_load_recent_ratings(userIds: list[str]):
+    return system_controller.run_feedbackv2_load(userIds, False)
+
+
+@app.post("/load/feedbackv2/all")
+def run_feedbackv2_load_all_ratings(userIds: list[str]):
+    return system_controller.run_feedbackv2_load(userIds, True)
 
 
 @app.get("/config")
 def get_config():
     return propertyManager.get_list_of_configs()
+
 
 def env_dump():
     print("")

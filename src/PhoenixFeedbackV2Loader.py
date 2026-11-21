@@ -191,12 +191,12 @@ class PhoenixFeedbackV2Loader(PhoenixAbstractV2DataLoader):
     # 200726: This function is created for allowing the user to download feedback
     # for a selection of users.
     # This is not used for the portable version of the market connector, only for the service mode
-    def load_by_userId (self, userIds: list[str]):
-        print("[INFO] Running load function for fetching feedback-v2 in service mode")
+    def load_by_userId (self, userIds: list[str], isGlobal : bool):
+        print(f"[INFO] Running load function for fetching feedback-v2 in service mode. isGlobal: {isGlobal}")
         if self.isServiceMode:
             ClientService.send_notification(self.propertyManager.getClientServiceEndpoint(), "update", "load", "OK", "Loading feedback for assets started")
         for userId in userIds:
-            self.load(userId, False)
+            self.load(userId, isGlobal)
         if self.isServiceMode:
             ClientService.send_notification(self.propertyManager.getClientServiceEndpoint(),"update", "load", "OK", "Loading feedback for assets completed")
 

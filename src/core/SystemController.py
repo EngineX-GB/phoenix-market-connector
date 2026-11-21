@@ -14,11 +14,14 @@ class SystemController:
     # if the system is fetching a selection of user ids, then there is no need to
     # block the process from running again, since latest records will only be stored in
     # the database if they don't exist already.
-    def run_feedbackv2_load(self, userIds : list[str]):
+    # isGlobal will determine if it will fetch all the feedback results or just page 1 of the results
+    # isGlobal=True (All the feedback results since the user was active)
+    # isGlobal=False (Only page 1 of the feedback results)
+    def run_feedbackv2_load(self, userIds : list[str], isGlobal : bool):
         if len(userIds) == 0:
             return PhoenixIOUtil.handle_response_message(
                 "ERROR", "A job was submitted to download feedback-v2 entries for 0 userIds.", "")
-        load_thread = threading.Thread(target=self.feedbackv2_loader.load_by_userId, args=(userIds,), name="load-feedback-v2-by-userids")
+        load_thread = threading.Thread(target=self.feedbackv2_loader.load_by_userId, args=(userIds, isGlobal), name="load-feedback-v2-by-userids")
         load_thread.start()
         return PhoenixIOUtil.handle_response_message("STARTED", "A load for feedback-v2 has started.", "")
 
